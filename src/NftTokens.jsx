@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import nfts from './nfts';
+import idl from './idl.json'
 import { GraphQLClient, gql } from 'graphql-request';
 import useCanvasWallet from "./CanvasWalletProvider";
 import {
@@ -62,7 +63,7 @@ export const NFTDisplay = ({ mintData }) => {
 
         const asset = Keypair.generate(); // This generates a new keypair
         const assetPublicKey = asset.publicKey;
-        
+
         const connection = new Connection(clusterApiUrl("devnet"), "confirmed");
         const provider = new AnchorProvider(connection, {
             publicKey: new PublicKey(walletAddress),
