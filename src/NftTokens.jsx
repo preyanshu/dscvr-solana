@@ -115,7 +115,7 @@ export const NFTDisplay = ({ mintData }) => {
             const tx = await program.methods
                 .createAsset(
                     nftName,           // Some string identifier
-                    new BN(userData.followerCount),       // Convert userData to BN (BigNumber)
+                    new BN(50),       // Convert userData to BN (BigNumber)
                     new BN(userData.dscvrPoints),         // Convert DSCVR points to BN
                     new BN(userData.streak?.dayCount),    // Convert streak day count to BN
                     username                              // Username string
