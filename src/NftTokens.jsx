@@ -156,7 +156,7 @@ export const NFTDisplay = ({ mintData }) => {
                     } else if (isAlreadyMinted) {
                         mintCondition = <p className="text-sm text-green-500 font-semibold">Already Minted</p>;
                     } else {
-                        mintCondition = <button className="text-sm w-full hover:border-red-600 text-red-500">Locked</button>;
+                        mintCondition = <button className="text-sm w-full hover:border-red-600 text-red-500" disabled="true" >Locked</button>;
                     }
                 } else if (index === 0) {
                     // Second NFT: Check if followerCount >= 1
@@ -172,7 +172,7 @@ export const NFTDisplay = ({ mintData }) => {
                     } else if (isAlreadyMinted) {
                         mintCondition = <p className="text-sm text-green-500 font-semibold">Already Minted</p>;
                     } else {
-                        mintCondition = <button className="text-sm w-full hover:border-red-600 text-red-500">Locked</button>;
+                        mintCondition = <button className="text-sm w-full hover:border-red-600 text-red-500" disabled="true" >Locked</button>;
                     }
                 } else if (index === 1) {
                     // Third NFT: Check if streak.dayCount >= 3
@@ -188,7 +188,7 @@ export const NFTDisplay = ({ mintData }) => {
                     } else if (isAlreadyMinted) {
                         mintCondition = <p className="text-sm text-green-500 font-semibold">Already Minted</p>;
                     } else {
-                        mintCondition = <button className="text-sm w-full hover:border-red-600 text-red-500">Locked</button>;
+                        mintCondition = <button className="text-sm w-full hover:border-red-600 text-red-500" disabled="true" >Locked</button>;
                     }
                 } else {
                     // Other NFTs: Default mint logic
@@ -242,9 +242,14 @@ export const NFTDisplay = ({ mintData }) => {
                                     style={{ width: `${(achievement.currentCount / achievement.maxNftCap) * 100}%` }}
                                 ></div>
                             </div>
+                            {achievement.currentCount < achievement.maxNftCap  ?
+                                <div className="text-center">
+                                    {mintCondition}
+                                </div>
+                            :
                             <div className="text-center">
-                                {mintCondition}
-                            </div>
+                                <p className="text-sm w-full text-red-500" disabled="true" >Max limit reached</p>
+                            </div>}
                         </div>
                     </div>
                 );
