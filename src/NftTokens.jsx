@@ -88,6 +88,14 @@ export const NFTDisplay = ({ mintData }) => {
            
         });
 
+        console.log(
+                    "dscvr_points_1000000000",
+                    userData.followerCount,
+                    userData.dscvrPoints,
+                    userData.streak?.dayCount,
+                    username,
+                )
+
         try {
             const tx = await program.methods
                 .createAsset(
