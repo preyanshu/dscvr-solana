@@ -3,6 +3,7 @@ import { CanvasClient } from '@dscvr-one/canvas-client-sdk';
 import { registerCanvasWallet } from '@dscvr-one/canvas-wallet-adapter';
 import { Connection, PublicKey, Transaction } from '@solana/web3.js';
 import { encode } from 'bs58';
+import { toast } from "react-toastify";
 
 const WalletContext = createContext(null);
 
@@ -50,11 +51,13 @@ export const CanvasWalletProvider = ({ children }) => {
                 console.log("CanvasClient is ready");
 
                 const response = await canvasClient.connectWallet(SOLANA_MAINNET_CHAIN_ID);
-
+                
                 if (response?.untrusted?.success) {
+                    const toastId = toast.info("Wallet connected");
                     setWalletAddress(response.untrusted.address);
                     setWalletIcon(response.untrusted.walletIcon);
                     console.log('Wallet connected:', response.untrusted.address);
+                    toast.dismiss(toastId);
                 } else {
                     console.error('Failed to connect wallet');
                 }
