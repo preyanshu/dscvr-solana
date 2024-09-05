@@ -214,7 +214,6 @@ export const NFTDisplay = ({ mintData }) => {
                     }
                 }
 
-
                 return (
                     <div
                         key={index}
