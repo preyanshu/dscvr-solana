@@ -116,6 +116,15 @@ button:focus-visible {
   background-color: #4f46e5; /* Darker shade of indigo-400 on hover */
 }
 
+@layer components {
+  .spinner-border {
+    border-top-color: transparent;
+    border-right-color: rgba(0, 0, 0, 0.1);
+    border-bottom-color: rgba(0, 0, 0, 0.1);
+    border-left-color: #000;
+  }
+}
+
 
 @media (prefers-color-scheme: light) {
   :root {

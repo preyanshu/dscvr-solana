@@ -1,3 +1,4 @@
+import { toast } from "react-toastify";
 import useCanvasWallet from "./CanvasWalletProvider";
 import UserProfile from "./UserProfile"; // Ensure the correct path to UserProfile
 
@@ -8,6 +9,7 @@ const WalletComponent = ({setWalletAddress}) => {
   console.log(userInfo)
 
   function truncateAddress(address) {
+    toast.info("Wallet connected");
     setWalletAddress(address);
     if (address.length <= 6) {
       return address;

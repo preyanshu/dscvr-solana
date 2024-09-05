@@ -3,7 +3,7 @@ import { CanvasWalletProvider } from './CanvasWalletProvider';
 import { MintedTokens } from './MintedTokens';
 import { useEffect, useState } from 'react';
 import NFTDisplay from './NftTokens';
-import {MintData1} from './MintData';
+import { MintData1 } from './MintData';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -18,14 +18,19 @@ function App() {
           <div className={`${walletAddress && "border-slate-700 bg-gray-800 border"} rounded-lg  p-4`}>
             <WalletComponent setWalletAddress={setWalletAddress} />
           </div>
-          
-          {walletAddress && <div className='border border-slate-700 rounded-lg p-4'>
-            {MintData && <MintedTokens MintData={MintData} />}
-            {!MintData && 
-            <div className='text-center text-lg'>
-              <span>loading...</span>
-            </div>}
-          </div>}
+
+          {walletAddress && (
+            <div className='border border-slate-700 rounded-lg p-4'>
+              {MintData ? (
+                <MintedTokens MintData={MintData} />
+              ) : (
+                <div className='flex justify-center items-center'>
+                  <div className='spinner-border animate-spin inline-block w-8 h-8 border-4 rounded-full' role='status'></div>
+                  <span className='ml-2 text-lg'>Loading...</span>
+                </div>
+              )}
+            </div>
+          )}
         </div>
         {walletAddress && <div className='w-full flex flex-col justify-center mt-5'>
           {MintData && <NFTDisplay mintData={MintData} />}
