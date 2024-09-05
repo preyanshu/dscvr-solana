@@ -14,7 +14,6 @@ import {
 import { Buffer } from "buffer";
 import useCanvasWallet from "./CanvasWalletProvider";
 
-// This is to fix an issue where Buffer might not be available globally
 window.Buffer = Buffer;
 import BN from 'bn.js';
 

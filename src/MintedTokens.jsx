@@ -29,7 +29,7 @@ export const MintedTokens = ({ MintData }) => {
                             </li>
                         ))
                     ) : (
-                        <li className='text-lg text-gray-500'>No wallets associated</li>
+                        <li className='text-lg text-center mt-3 text-gray-500'>No wallets associated</li>
                     )}
                 </ul>
             </div>

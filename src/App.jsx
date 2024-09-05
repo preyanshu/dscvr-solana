@@ -18,9 +18,13 @@ function App() {
           <div className={`${walletAddress && "border-slate-700 bg-gray-800 border"} rounded-lg  p-4`}>
             <WalletComponent setWalletAddress={setWalletAddress} />
           </div>
-
+          
           {walletAddress && <div className='border border-slate-700 rounded-lg p-4'>
             {MintData && <MintedTokens MintData={MintData} />}
+            {!MintData && 
+            <div className='text-center text-lg'>
+              <span>loading...</span>
+            </div>}
           </div>}
         </div>
         {walletAddress && <div className='w-full flex flex-col justify-center mt-5'>

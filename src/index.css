@@ -42,6 +42,7 @@ body {
   justify-content: center;
   min-width: 95vw;
   min-height: 100vh;
+  overflow-x: hidden;
 }
 
 h1 {
