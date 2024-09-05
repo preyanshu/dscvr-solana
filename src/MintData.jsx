@@ -28,19 +28,14 @@ export const MintData1 = ({ setMintData }) => {
                 return;
             }
 
-            const provider = new AnchorProvider(
-                connection,
-                {
-                    publicKey: new PublicKey(walletAddress),
-                    signTransaction: async (tx) => await signTransaction(tx),
-                },
-                {
-                    commitment: "confirmed",
-                }
-            );
+            const provider = new AnchorProvider(connection, {
+                publicKey: new PublicKey(walletAddress),
+                signTransaction,
+              }, {
+                commitment: "confirmed",
+              });
 
-            const programId = new PublicKey(idl.metadata.address);
-            const program = new Program(idl, programId, provider);
+            const program = new Program(idl, provider);
 
             const res = await program.account.database.fetch(
                 new PublicKey('8oPtWBtTKohRGqUDwC2f5JFUgUH5mqBy1vAPzBFFGhzH')

@@ -10,7 +10,7 @@ import 'react-toastify/dist/ReactToastify.css';
 function App() {
   const [walletAddress, setWalletAddress] = useState('');
   const [MintData, setMintData] = useState(null);
-  console.log(walletAddress)
+
   return (
     <CanvasWalletProvider>
       <div className="container h-full">
