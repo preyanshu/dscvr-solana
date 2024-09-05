@@ -77,6 +77,17 @@ export const NFTDisplay = ({ mintData }) => {
         const program = new Program(idl, provider);
         console.log(`Minting NFT: ${nftName, username}`);
 
+        console.log("accounts info :",{
+            signer: new PublicKey(walletAddress),
+            payer: new PublicKey(walletAddress),
+            collection: new PublicKey('EEA4LnDi8eXWbrGLXVEBWuUxYG98nZ2dqbrr1FMHLE9o'),
+            asset: assetPublicKey,
+            database: new PublicKey('8oPtWBtTKohRGqUDwC2f5JFUgUH5mqBy1vAPzBFFGhzH'),
+            mplCoreProgram: MPL_CORE_PROGRAM_ID,
+            systemProgram   : SystemProgram.programId,
+           
+        });
+
         try {
             const tx = await program.methods
                 .createAsset(
@@ -93,10 +104,11 @@ export const NFTDisplay = ({ mintData }) => {
                     asset: assetPublicKey,
                     database: new PublicKey('8oPtWBtTKohRGqUDwC2f5JFUgUH5mqBy1vAPzBFFGhzH'),
                     mplCoreProgram: MPL_CORE_PROGRAM_ID,
-                    // systemProgram: SystemProgram.programId,
+                    systemProgram   : SystemProgram.programId,
+                   
                 })
                 .rpc();
-            console.log(tx);
+            console.log(tx,"tx");
         } catch (error) {
             console.log(error);
         }
