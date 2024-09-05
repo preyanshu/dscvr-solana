@@ -16,10 +16,16 @@ import useCanvasWallet from "./CanvasWalletProvider";
 
 // This is to fix an issue where Buffer might not be available globally
 window.Buffer = Buffer;
+import BN from 'bn.js';
 
 export const MintData1 = ({ setMintData }) => {
+    
     const { walletAddress, signTransaction } = useCanvasWallet();
     const connection = new Connection(clusterApiUrl("devnet"), "confirmed");
+
+    function parseBN(data) {
+        return new BN(data.words, 10, 'le').toNumber();
+      }
 
     async function init() {
         try {
@@ -40,6 +46,17 @@ export const MintData1 = ({ setMintData }) => {
             const res = await program.account.database.fetch(
                 new PublicKey('8oPtWBtTKohRGqUDwC2f5JFUgUH5mqBy1vAPzBFFGhzH')
             );
+             res.achievements.forEach(achievement => {
+                const currentCount = parseBN(achievement.currentCount);
+                const maxNftCap = parseBN(achievement.maxNftCap);
+
+                achievement.currentCount = currentCount;
+                achievement.maxNftCap = maxNftCap;
+                
+                console.log(`Achievement: ${achievement.name}`);
+                console.log(`Current Count: ${currentCount}`);
+                console.log(`Max NFT Cap: ${maxNftCap}`);
+              });
             console.log("Fetched data:", res);
 
             // setMintData(res);
