@@ -4,7 +4,7 @@ import { MintedTokens } from './MintedTokens';
 import { useEffect, useState } from 'react';
 import NFTDisplay from './NftTokens';
 import { MintData1 } from './MintData';
-import { ToastContainer } from 'react-toastify';
+import { Bounce, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 function App() {
@@ -47,7 +47,7 @@ function App() {
           draggable
           pauseOnHover
           theme="dark"
-          transition="bounce"
+          transition={Bounce}
         />
       </div>
     </CanvasWalletProvider>
