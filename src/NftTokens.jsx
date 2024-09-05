@@ -128,6 +128,7 @@ export const NFTDisplay = ({ mintData }) => {
     
         } catch (error) {
             // Handle any errors that occur during the transaction
+            console.log("transaction", tx)
             console.error("Error during minting process:", error);
         }
     };
