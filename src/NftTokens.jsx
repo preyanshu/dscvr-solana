@@ -121,6 +121,7 @@ export const NFTDisplay = ({ mintData }) => {
                     username                              // Username string
                 )
                 .accounts(accounts)
+                .signers([asset])
                 .rpc();
     
             console.log("Transaction successful, tx hash:", tx);
