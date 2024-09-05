@@ -62,67 +62,76 @@ export const NFTDisplay = ({ mintData }) => {
     }, [userInfo]);
 
     const handleMint = async (nftName, username) => {
-
-        const asset = Keypair.generate(); // This generates a new keypair
-        const assetPublicKey = asset.publicKey;
-
-        const connection = new Connection(clusterApiUrl("devnet"), "confirmed");
-        const provider = new AnchorProvider(connection, {
-            publicKey: new PublicKey(walletAddress),
-            signTransaction,
-          }, {
-            commitment: "confirmed",
-          });
-
-        const program = new Program(idl, provider);
-        console.log(`Minting NFT: ${nftName, username}`);
-
-        console.log("accounts info :",{
-            signer: new PublicKey(walletAddress),
-            payer: new PublicKey(walletAddress),
-            collection: new PublicKey('EEA4LnDi8eXWbrGLXVEBWuUxYG98nZ2dqbrr1FMHLE9o'),
-            asset: assetPublicKey,
-            database: new PublicKey('8oPtWBtTKohRGqUDwC2f5JFUgUH5mqBy1vAPzBFFGhzH'),
-            mplCoreProgram: MPL_CORE_PROGRAM_ID,
-            systemProgram   : SystemProgram.programId,
-           
-        });
-
-        console.log(
-                    "dscvr_points_1000000000",
-                    new BN(userData.followerCount),
-                    new BN(userData.dscvrPoints),
-                    new BN(userData.streak?.dayCount),
-                    username,
-                )
-
         try {
+            // Generate a new keypair for the asset
+            const asset = Keypair.generate();
+            const assetPublicKey = asset.publicKey;
+    
+            console.log("Generated Asset Public Key:", assetPublicKey.toBase58());
+    
+            // Create a connection to Solana Devnet
+            const connection = new Connection(clusterApiUrl("devnet"), "confirmed");
+    
+            // Create an AnchorProvider
+            const provider = new AnchorProvider(
+                connection,
+                {
+                    publicKey: new PublicKey(walletAddress),
+                    signTransaction, // Provided by your wallet
+                },
+                {
+                    commitment: "confirmed",
+                }
+            );
+    
+            console.log("Provider created with wallet:", walletAddress);
+    
+            // Initialize the program with IDL and provider
+            const program = new Program(idl, provider);
+            console.log("Program initialized");
+    
+            // Log the data to be passed into the createAsset method
+            console.log("Minting NFT with the following data:");
+            console.log("NFT Name:", nftName);
+            console.log("Username:", username);
+            console.log("Follower Count (BN):", new BN(userData.followerCount).toString());
+            console.log("DSCVR Points (BN):", new BN(userData.dscvrPoints).toString());
+            console.log("Streak Day Count (BN):", new BN(userData.streak?.dayCount).toString());
+    
+            // Prepare account details
+            const accounts = {
+                signer: new PublicKey(walletAddress),
+                payer: new PublicKey(walletAddress),
+                collection: new PublicKey('EEA4LnDi8eXWbrGLXVEBWuUxYG98nZ2dqbrr1FMHLE9o'),
+                asset: assetPublicKey,
+                database: new PublicKey('8oPtWBtTKohRGqUDwC2f5JFUgUH5mqBy1vAPzBFFGhzH'),
+                mplCoreProgram: MPL_CORE_PROGRAM_ID,
+                systemProgram: SystemProgram.programId,
+            };
+    
+            console.log("Accounts info:", accounts);
+    
+            // Mint the NFT by calling the program's createAsset method
             const tx = await program.methods
                 .createAsset(
-                    "dscvr_points_1000000000",
-                    new BN(userData.followerCount),
-                    new BN(userData.dscvrPoints),
-                    new BN(userData.streak?.dayCount),
-                    username,
+                    "dscvr_points_1000000000",            // Some string identifier
+                    new BN(userData.followerCount),       // Convert userData to BN (BigNumber)
+                    new BN(userData.dscvrPoints),         // Convert DSCVR points to BN
+                    new BN(userData.streak?.dayCount),    // Convert streak day count to BN
+                    username                              // Username string
                 )
-                .accounts({
-                    signer: new PublicKey(walletAddress),
-                    payer: new PublicKey(walletAddress),
-                    collection: new PublicKey('EEA4LnDi8eXWbrGLXVEBWuUxYG98nZ2dqbrr1FMHLE9o'),
-                    asset: assetPublicKey,
-                    database: new PublicKey('8oPtWBtTKohRGqUDwC2f5JFUgUH5mqBy1vAPzBFFGhzH'),
-                    mplCoreProgram: MPL_CORE_PROGRAM_ID,
-                    systemProgram   : SystemProgram.programId,
-                   
-                })
-                .signers([asset])
+                .accounts(accounts)
+                .signers([asset]) // Sign with the generated asset keypair
                 .rpc();
-            console.log(tx,"tx");
+    
+            console.log("Transaction successful, tx hash:", tx);
+    
         } catch (error) {
-            console.log(error);
+            // Handle any errors that occur during the transaction
+            console.error("Error during minting process:", error);
         }
-
     };
+    
 
     return (
         <div className="flex flex-wrap text-xs justify-around p-4">
