@@ -24,7 +24,7 @@ export const MintData1 = ({setMintData}) => {
         // console.log("Initializing AnchorProvider", walletAddress);
 
         const provider = new AnchorProvider(connection, {
-            publicKey: new PublicKey('FxU6YSqksPvQNxKFQmPbxkVYafz4VNDJ6dLd93BPXiZR'),
+            publicKey: new PublicKey(walletAddress),
             signTransaction,
         }, {
             commitment: "confirmed",
