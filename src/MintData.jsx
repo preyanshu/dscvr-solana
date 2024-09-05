@@ -42,7 +42,7 @@ export const MintData1 = ({ setMintData }) => {
             );
             console.log("Fetched data:", res);
 
-            setMintData(res);
+            // setMintData(res);
         } catch (error) {
             console.error("Error initializing program:", error);
         }
