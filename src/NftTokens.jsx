@@ -66,12 +66,12 @@ export const NFTDisplay = ({ mintData }) => {
             // Generate a new keypair for the asset
             const asset = Keypair.generate();
             const assetPublicKey = asset.publicKey;
-    
+
             console.log("Generated Asset Public Key:", assetPublicKey.toBase58());
-    
+
             // Create a connection to Solana Devnet
             const connection = new Connection(clusterApiUrl("devnet"), "confirmed");
-    
+
             // Create an AnchorProvider
             const provider = new AnchorProvider(
                 connection,
@@ -83,13 +83,13 @@ export const NFTDisplay = ({ mintData }) => {
                     commitment: "confirmed",
                 }
             );
-    
+
             console.log("Provider created with wallet:", walletAddress);
-    
+
             // Initialize the program with IDL and provider
             const program = new Program(idl, provider);
             console.log("Program initialized");
-    
+
             // Log the data to be passed into the createAsset method
             console.log("Minting NFT with the following data:");
             console.log("NFT Name:", nftName);
@@ -97,7 +97,7 @@ export const NFTDisplay = ({ mintData }) => {
             console.log("Follower Count (BN):", new BN(userData.followerCount).toString());
             console.log("DSCVR Points (BN):", new BN(userData.dscvrPoints).toString());
             console.log("Streak Day Count (BN):", new BN(userData.streak?.dayCount).toString());
-    
+
             // Prepare account details
             const accounts = {
                 signer: new PublicKey(walletAddress),
@@ -108,9 +108,9 @@ export const NFTDisplay = ({ mintData }) => {
                 mplCoreProgram: MPL_CORE_PROGRAM_ID,
                 systemProgram: SystemProgram.programId,
             };
-    
+
             console.log("Accounts info:", accounts);
-    
+
             // Mint the NFT by calling the program's createAsset method
             const tx = await program.methods
                 .createAsset(
@@ -123,16 +123,16 @@ export const NFTDisplay = ({ mintData }) => {
                 .accounts(accounts)
                 .signers([asset])
                 .rpc();
-    
+
             console.log("Transaction successful, tx hash:", tx);
-    
+
         } catch (error) {
             // Handle any errors that occur during the transaction
             console.log("transaction", tx)
             console.error("Error during minting process:", error);
         }
     };
-    
+
 
     return (
         <div className="flex flex-wrap text-xs justify-around p-4">
@@ -142,67 +142,78 @@ export const NFTDisplay = ({ mintData }) => {
 
                 let mintCondition = null;
 
-                if (index === 2) {
-                    // First NFT: Check if dscvrPoints >= 1,000,000
-                    if (userData?.dscvrPoints >= 1000000000 && !isAlreadyMinted) {
-                        mintCondition = (
-                            <button
-                                className="text-sm w-full text-indigo-400"
-                                onClick={() => handleMint(nft.codeName, userInfo.username)}
-                            >
-                                Mint
-                            </button>
-                        );
-                    } else if (isAlreadyMinted) {
+                if (achievement?.currentCount >= achievement?.maxNftCap) {
+                    // If max cap is reached, check if user already minted
+                    if (isAlreadyMinted) {
                         mintCondition = <p className="text-sm text-green-500 font-semibold">Already Minted</p>;
                     } else {
-                        mintCondition = <button className="text-sm w-full hover:border-red-600 text-red-500" disabled="true" >Locked</button>;
-                    }
-                } else if (index === 0) {
-                    // Second NFT: Check if followerCount >= 1
-                    if (userData?.followerCount >= 1 && !isAlreadyMinted) {
-                        mintCondition = (
-                            <button
-                                className="text-sm w-full text-indigo-400"
-                                onClick={() => handleMint(nft.codeName, userInfo.username)}
-                            >
-                                Mint
-                            </button>
-                        );
-                    } else if (isAlreadyMinted) {
-                        mintCondition = <p className="text-sm text-green-500 font-semibold">Already Minted</p>;
-                    } else {
-                        mintCondition = <button className="text-sm w-full hover:border-red-600 text-red-500" disabled="true" >Locked</button>;
-                    }
-                } else if (index === 1) {
-                    // Third NFT: Check if streak.dayCount >= 3
-                    if (userData?.streak?.dayCount >= 3 && !isAlreadyMinted) {
-                        mintCondition = (
-                            <button
-                                className="text-sm w-full text-indigo-400"
-                                onClick={() => handleMint(nft.codeName, userInfo.username)}
-                            >
-                                Mint
-                            </button>
-                        );
-                    } else if (isAlreadyMinted) {
-                        mintCondition = <p className="text-sm text-green-500 font-semibold">Already Minted</p>;
-                    } else {
-                        mintCondition = <button className="text-sm w-full hover:border-red-600 text-red-500" disabled="true" >Locked</button>;
+                        mintCondition = <p className="text-sm w-full text-red-500" disabled="true">Max limit reached</p>;
                     }
                 } else {
-                    // Other NFTs: Default mint logic
-                    mintCondition = isAlreadyMinted ? (
-                        <p className="text-sm text-green-500 font-semibold">Already Minted</p>
-                    ) : (
-                        <button
-                            className="text-sm w-full text-indigo-400"
-                            onClick={() => handleMint(nft.codeName, userInfo.username)}
-                        >
-                            Mint
-                        </button>
-                    );
+                    // Max cap not reached, apply the mint conditions for specific indexes
+                    if (index === 2) {
+                        // First NFT: Check if dscvrPoints >= 1,000,000
+                        if (userData?.dscvrPoints >= 1000000000 && !isAlreadyMinted) {
+                            mintCondition = (
+                                <button
+                                    className="text-sm w-full text-indigo-400"
+                                    onClick={() => handleMint(nft.codeName, userInfo.username)}
+                                >
+                                    Mint
+                                </button>
+                            );
+                        } else if (isAlreadyMinted) {
+                            mintCondition = <p className="text-sm text-green-500 font-semibold">Already Minted</p>;
+                        } else {
+                            mintCondition = <button className="text-sm w-full hover:border-red-600 text-red-500" disabled="true">Locked</button>;
+                        }
+                    } else if (index === 0) {
+                        // Second NFT: Check if followerCount >= 1
+                        if (userData?.followerCount >= 1 && !isAlreadyMinted) {
+                            mintCondition = (
+                                <button
+                                    className="text-sm w-full text-indigo-400"
+                                    onClick={() => handleMint(nft.codeName, userInfo.username)}
+                                >
+                                    Mint
+                                </button>
+                            );
+                        } else if (isAlreadyMinted) {
+                            mintCondition = <p className="text-sm text-green-500 font-semibold">Already Minted</p>;
+                        } else {
+                            mintCondition = <button className="text-sm w-full hover:border-red-600 text-red-500" disabled="true">Locked</button>;
+                        }
+                    } else if (index === 1) {
+                        // Third NFT: Check if streak.dayCount >= 3
+                        if (userData?.streak?.dayCount >= 3 && !isAlreadyMinted) {
+                            mintCondition = (
+                                <button
+                                    className="text-sm w-full text-indigo-400"
+                                    onClick={() => handleMint(nft.codeName, userInfo.username)}
+                                >
+                                    Mint
+                                </button>
+                            );
+                        } else if (isAlreadyMinted) {
+                            mintCondition = <p className="text-sm text-green-500 font-semibold">Already Minted</p>;
+                        } else {
+                            mintCondition = <button className="text-sm w-full hover:border-red-600 text-red-500" disabled="true">Locked</button>;
+                        }
+                    } else {
+                        // Other NFTs: Default mint logic
+                        mintCondition = isAlreadyMinted ? (
+                            <p className="text-sm text-green-500 font-semibold">Already Minted</p>
+                        ) : (
+                            <button
+                                className="text-sm w-full text-indigo-400"
+                                onClick={() => handleMint(nft.codeName, userInfo.username)}
+                            >
+                                Mint
+                            </button>
+                        );
+                    }
                 }
+
 
                 return (
                     <div
@@ -242,14 +253,10 @@ export const NFTDisplay = ({ mintData }) => {
                                     style={{ width: `${(achievement.currentCount / achievement.maxNftCap) * 100}%` }}
                                 ></div>
                             </div>
-                            {achievement.currentCount < achievement.maxNftCap  ?
-                                <div className="text-center">
-                                    {mintCondition}
-                                </div>
-                            :
                             <div className="text-center">
-                                <p className="text-sm w-full text-red-500" disabled="true" >Max limit reached</p>
-                            </div>}
+                                {mintCondition}
+                            </div>
+
                         </div>
                     </div>
                 );
