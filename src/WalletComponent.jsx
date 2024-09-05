@@ -9,13 +9,14 @@ const WalletComponent = ({setWalletAddress}) => {
   console.log(userInfo)
 
   function truncateAddress(address) {
-    toast.info("Wallet connected", {
+    const toastId = toast.info("Wallet connected", {
       autoClose: 5000,
       closeOnClick: true,
       pauseOnHover: true,
-      draggable: true,  
+      draggable: true, 
     });
     setWalletAddress(address);
+    toast.dismiss(toastId);
     if (address.length <= 6) {
       return address;
     }
