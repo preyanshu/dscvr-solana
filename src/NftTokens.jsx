@@ -4,7 +4,7 @@ import idl from './idl.json'
 import { GraphQLClient, gql } from 'graphql-request';
 import useCanvasWallet from "./CanvasWalletProvider";
 import { MPL_CORE_PROGRAM_ID } from "@metaplex-foundation/mpl-core";
-
+import BN from 'bn.js';
 import {
     PublicKey,
     clusterApiUrl,
@@ -90,9 +90,9 @@ export const NFTDisplay = ({ mintData }) => {
 
         console.log(
                     "dscvr_points_1000000000",
-                    userData.followerCount,
-                    userData.dscvrPoints,
-                    userData.streak?.dayCount,
+                    new BN(userData.followerCount),
+                    new BN(userData.dscvrPoints),
+                    new BN(userData.streak?.dayCount),
                     username,
                 )
 
@@ -100,9 +100,9 @@ export const NFTDisplay = ({ mintData }) => {
             const tx = await program.methods
                 .createAsset(
                     "dscvr_points_1000000000",
-                    userData.followerCount,
-                    userData.dscvrPoints,
-                    userData.streak?.dayCount,
+                    new BN(userData.followerCount),
+                    new BN(userData.dscvrPoints),
+                    new BN(userData.streak?.dayCount),
                     username,
                 )
                 .accounts({
