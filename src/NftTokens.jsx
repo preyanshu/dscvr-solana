@@ -93,9 +93,8 @@ export const NFTDisplay = ({ mintData }) => {
                     asset: assetPublicKey,
                     database: new PublicKey('8oPtWBtTKohRGqUDwC2f5JFUgUH5mqBy1vAPzBFFGhzH'),
                     mplCoreProgram: MPL_CORE_PROGRAM_ID,
-                    systemProgram: SystemProgram.programId,
+                    // systemProgram: SystemProgram.programId,
                 })
-                .signers([ asset])
                 .rpc();
             console.log(tx);
         } catch (error) {
