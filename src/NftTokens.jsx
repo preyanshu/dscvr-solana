@@ -114,14 +114,13 @@ export const NFTDisplay = ({ mintData }) => {
             // Mint the NFT by calling the program's createAsset method
             const tx = await program.methods
                 .createAsset(
-                    "dscvr_points_1000000000",            // Some string identifier
+                    nftName,           // Some string identifier
                     new BN(userData.followerCount),       // Convert userData to BN (BigNumber)
                     new BN(userData.dscvrPoints),         // Convert DSCVR points to BN
                     new BN(userData.streak?.dayCount),    // Convert streak day count to BN
                     username                              // Username string
                 )
                 .accounts(accounts)
-                .signers([asset]) // Sign with the generated asset keypair
                 .rpc();
     
             console.log("Transaction successful, tx hash:", tx);
@@ -147,7 +146,7 @@ export const NFTDisplay = ({ mintData }) => {
                         mintCondition = (
                             <button
                                 className="text-sm w-full text-indigo-400"
-                                onClick={() => handleMint(codeName, userInfo.username)}
+                                onClick={() => handleMint(nft.codeName, userInfo.username)}
                             >
                                 Mint
                             </button>
