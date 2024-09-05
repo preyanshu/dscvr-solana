@@ -3,6 +3,8 @@ import nfts from './nfts';
 import idl from './idl.json'
 import { GraphQLClient, gql } from 'graphql-request';
 import useCanvasWallet from "./CanvasWalletProvider";
+import { MPL_CORE_PROGRAM_ID } from "@metaplex-foundation/mpl-core";
+
 import {
     PublicKey,
     clusterApiUrl,
