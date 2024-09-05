@@ -10,6 +10,10 @@ import {
     Transaction,
     Keypair
 } from "@solana/web3.js";
+import {
+    AnchorProvider,
+    Program,
+} from "@coral-xyz/anchor";
 
 const client = new GraphQLClient('https://api.dscvr.one/graphql');
 
@@ -31,7 +35,7 @@ const GET_USER_DATA = gql`
 
 
 export const NFTDisplay = ({ mintData }) => {
-    const { walletAddress, userInfo } = useCanvasWallet();
+    const { walletAddress, userInfo, signTransaction } = useCanvasWallet();
     const [userData, setUserData] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -58,7 +62,16 @@ export const NFTDisplay = ({ mintData }) => {
 
         const asset = Keypair.generate(); // This generates a new keypair
         const assetPublicKey = asset.publicKey;
-        // Handle mint logic here
+        
+        const connection = new Connection(clusterApiUrl("devnet"), "confirmed");
+        const provider = new AnchorProvider(connection, {
+            publicKey: new PublicKey(walletAddress),
+            signTransaction,
+          }, {
+            commitment: "confirmed",
+          });
+
+        const program = new Program(idl, provider);
         console.log(`Minting NFT: ${nftName, username}`);
 
         try {
@@ -110,7 +123,7 @@ export const NFTDisplay = ({ mintData }) => {
                     } else if (isAlreadyMinted) {
                         mintCondition = <p className="text-sm text-green-500 font-semibold">Already Minted</p>;
                     } else {
-                        mintCondition = <button className="text-sm w-full text-red">Locked</button>;
+                        mintCondition = <button className="text-sm w-full hover:border-red-600 text-red-500">Locked</button>;
                     }
                 } else if (index === 0) {
                     // Second NFT: Check if followerCount >= 1
@@ -126,7 +139,7 @@ export const NFTDisplay = ({ mintData }) => {
                     } else if (isAlreadyMinted) {
                         mintCondition = <p className="text-sm text-green-500 font-semibold">Already Minted</p>;
                     } else {
-                        mintCondition = <button className="text-sm w-full text-red">Locked</button>;
+                        mintCondition = <button className="text-sm w-full hover:border-red-600 text-red-500">Locked</button>;
                     }
                 } else if (index === 1) {
                     // Third NFT: Check if streak.dayCount >= 3
