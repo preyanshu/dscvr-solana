@@ -29,7 +29,7 @@ const WalletComponent = ({setWalletAddress}) => {
        </div>
        }
 
-      {userInfo && (
+      {userInfo && walletAddress && (
         <div>
           <div className="flex items-center mb-2">
             {userInfo.avatar ? (
