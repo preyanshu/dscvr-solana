@@ -53,11 +53,13 @@ export const CanvasWalletProvider = ({ children }) => {
                 const response = await canvasClient.connectWallet(SOLANA_MAINNET_CHAIN_ID);
                 
                 if (response?.untrusted?.success) {
-                    const toastId = toast.info("Wallet connected");
+                    toast.success("Wallet connected", {
+                        autoClose: 5000,
+                        closeOnClick: true,
+                    });
                     setWalletAddress(response.untrusted.address);
                     setWalletIcon(response.untrusted.walletIcon);
                     console.log('Wallet connected:', response.untrusted.address);
-                    toast.dismiss(toastId);
                 } else {
                     console.error('Failed to connect wallet');
                 }
