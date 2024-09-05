@@ -10,7 +10,7 @@ import 'react-toastify/dist/ReactToastify.css';
 function App() {
   const [walletAddress, setWalletAddress] = useState('');
   const [MintData, setMintData] = useState(null);
-  console.log(MintData)
+  console.log(walletAddress)
   return (
     <CanvasWalletProvider>
       <div className="container h-full">
@@ -25,8 +25,8 @@ function App() {
         </div>
         {walletAddress && <div className='w-full flex flex-col justify-center mt-5'>
           {MintData && <NFTDisplay mintData={MintData} />}
+          <MintData1 setMintData={setMintData} />
         </div>}
-        <MintData1 setMintData={setMintData} />
         <ToastContainer
           position="top-right"
           autoClose={5000}
