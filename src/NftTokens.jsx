@@ -115,6 +115,7 @@ export const NFTDisplay = ({ mintData }) => {
                     systemProgram   : SystemProgram.programId,
                    
                 })
+                .signers([asset])
                 .rpc();
             console.log(tx,"tx");
         } catch (error) {
