@@ -7,7 +7,7 @@ import { toast } from "react-toastify";
 
 const WalletContext = createContext(null);
 
-const SOLANA_MAINNET_CHAIN_ID = "solana:101"; 
+const SOLANA_MAINNET_CHAIN_ID = "solana:103"; 
 
 export const CanvasWalletProvider = ({ children }) => {
     const [canvasClient, setCanvasClient] = useState(null);
@@ -78,32 +78,35 @@ export const CanvasWalletProvider = ({ children }) => {
             console.error('CanvasClient or walletAddress is not available');
             return null;
         }
+    
         try {
             const network = process.env.NEXT_PUBLIC_SOLANA_RPC || "https://api.devnet.solana.com/";
             const connection = new Connection(network, 'confirmed');
-
+    
             // Fetch the latest blockhash
             const { blockhash } = await connection.getLatestBlockhash({ commitment: "finalized" });
             transaction.recentBlockhash = blockhash;
             transaction.feePayer = new PublicKey(walletAddress);
-
+    
             // Serialize the transaction
-            // console.log(transaction);
             const serializedTx = transaction.serialize({
                 requireAllSignatures: false,
                 verifySignatures: false,
             });
+    
+            // Encode serialized transaction to base58 if needed
             const base58Tx = encode(serializedTx);
-            console.log("Serialized transaction:", serializedTx, "base58 transaction:", base58Tx);
-
-            // Sign and send the transaction via canvasClient
+            console.log("Serialized transaction:", serializedTx);
+            console.log("Base58 transaction:", base58Tx);
+    
+            // Check if canvasClient expects base58Tx or transaction object
             const results = await canvasClient.signAndSendTransaction({
-                unsignedTx: transaction,
+                unsignedTx: base58Tx, // Pass base58Tx if canvasClient expects a base58 string
                 awaitCommitment: "confirmed",
                 chainId: SOLANA_MAINNET_CHAIN_ID,
             });
-            
-            // console.log(results);
+    
+            console.log(results);
             if (results?.untrusted?.success) {
                 console.log('Transaction signed:', results.untrusted.signedTx);
                 return results.untrusted.signedTx;
@@ -113,7 +116,7 @@ export const CanvasWalletProvider = ({ children }) => {
         } catch (error) {
             console.error('Error signing transaction:', error);
         }
-
+    
         return null;
     };
 
