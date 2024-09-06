@@ -146,7 +146,7 @@ export const NFTDisplay = ({ mintData }) => {
                 commitment: "confirmed",
               });
 
-              console.log("wallet: " , wallet)
+            //   console.log("wallet: " , wallet)
     
             console.log("Provider created with wallet:", provider);
     
