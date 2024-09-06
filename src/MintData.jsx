@@ -43,7 +43,7 @@ export const MintData1 = ({ setMintData }) => {
             const program = new Program(idl, provider);
 
             const res = await program.account.database.fetch(
-                new PublicKey('8oPtWBtTKohRGqUDwC2f5JFUgUH5mqBy1vAPzBFFGhzH')
+                new PublicKey('5ahNFeoYAS4HayZWK6osa6ZiocNojNJcfzgUJASicRbf')
             );
              res.achievements.forEach(achievement => {
                 const currentCount = parseBN(achievement.currentCount);
