@@ -21,7 +21,7 @@ export const MintedTokens = ({ MintData }) => {
                     {achievement?.wallets.length > 0 ? (
                         achievement?.wallets.map((wallet, index) => (
                             <li className='border border-gray-500 rounded-lg my-2 p-2' key={index}>
-                                <span className='font-bold cursor-pointer px-3 text-indigo-400' onClick={() => openUserUrl1(wallet.userId)}>
+                                <span className='font-bold cursor-pointer pr-2 text-indigo-400' onClick={() => openUserUrl1(wallet.userId)}>
                                  <span className='text-white'>#{index+1}</span>   {wallet.userId}</span>
                                 <span className="text-xs">
                                     {wallet.walletAddress}

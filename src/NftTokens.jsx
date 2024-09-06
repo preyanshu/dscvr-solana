@@ -39,12 +39,12 @@ const GET_USER_DATA = gql`
 
 
 export const NFTDisplay = ({ mintData }) => {
-    const { walletAddress, userInfo, signTransaction } = useCanvasWallet();
+    const { walletAddress, userInfo, signTransaction, connectWallet } = useCanvasWallet();
     const [userData, setUserData] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
-    const fetchUserData = async (username) => {
+     const fetchUserData = async (username) => {
         try {
             setLoading(true);
             const data = await client.request(GET_USER_DATA, { username });
@@ -130,6 +130,7 @@ export const NFTDisplay = ({ mintData }) => {
     const handleMint = async (nftName, username) => {
         try {
             // Generate a new keypair for the asset
+            await connectWallet();
             const asset = Keypair.generate();
             const assetPublicKey = asset.publicKey;
 
@@ -137,6 +138,7 @@ export const NFTDisplay = ({ mintData }) => {
 
             // Create a connection to Solana Devnet
             const connection = new Connection(clusterApiUrl("devnet"), "confirmed");
+            console.log(connection.getAccountInfo());
 
             // Create an AnchorProvider
             const provider = new AnchorProvider(
@@ -154,7 +156,7 @@ export const NFTDisplay = ({ mintData }) => {
 
             // Initialize the program with IDL and provider
             const program = new Program(idl, provider);
-            console.log("Program initialized");
+            console.log("Program initialized", program);
 
             // Log the data to be passed into the createAsset method
             console.log("Minting NFT with the following data:");
@@ -194,8 +196,8 @@ export const NFTDisplay = ({ mintData }) => {
 
         } catch (error) {
             // Handle any errors that occur during the transaction
-            toast.error("Error during minting process:", error)
-            console.log("transaction", tx)
+            // toast.error("Error during minting process:", error)
+            console.log("transaction")
             console.error("Error during minting process:", error);
         }
     };
