@@ -7,7 +7,7 @@ import { toast } from "react-toastify";
 
 const WalletContext = createContext(null);
 
-const SOLANA_MAINNET_CHAIN_ID = "solana:103"; 
+const SOLANA_MAINNET_CHAIN_ID = "solana:101"; 
 
 export const CanvasWalletProvider = ({ children }) => {
     const [canvasClient, setCanvasClient] = useState(null);
@@ -102,7 +102,8 @@ export const CanvasWalletProvider = ({ children }) => {
                 awaitCommitment: "confirmed",
                 chainId: SOLANA_MAINNET_CHAIN_ID,
             });
-
+            
+            console.log(results);
             if (results?.untrusted?.success) {
                 console.log('Transaction signed:', results.untrusted.signedTx);
                 return results.untrusted.signedTx;
