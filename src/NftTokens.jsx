@@ -12,6 +12,7 @@ import {
     Transaction,
     Keypair
 } from "@solana/web3.js";
+import { useAnchorWallet, useConnection } from '@solana/wallet-adapter-react';
 import {
     AnchorProvider,
     Program,
@@ -38,10 +39,12 @@ const GET_USER_DATA = gql`
 
 
 export const NFTDisplay = ({ mintData }) => {
-    const { walletAddress, userInfo, signTransaction, connectWallet, provider } = useCanvasWallet();
+    const { walletAddress, userInfo, signTransaction, connectWallet } = useCanvasWallet();
     const [userData, setUserData] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const wallet = useAnchorWallet();
+    const { connection } = useConnection()
 
     const fetchUserData = async (username) => {
         try {
@@ -78,22 +81,19 @@ export const NFTDisplay = ({ mintData }) => {
             console.log("Generated Asset Public Key:", assetPublicKey.toBase58());
 
             // Create a connection to Solana (using Devnet for testing)
-            const connection = new Connection(clusterApiUrl("devnet"), "confirmed");
+            // const connection = new Connection(clusterApiUrl("devnet"), "confirmed"); 
 
             console.log("Created connection:", connection);
 
             // Create an AnchorProvider with the wallet address and signTransaction function
-            const anchorProvider = new AnchorProvider(connection, {
-                publicKey: new PublicKey(walletAddress),
-                signTransaction
-            }, {
+            const anchorProvider = new AnchorProvider(connection, wallet,{
                 commitment: "confirmed",
             });
 
-            console.log("Provider created with wallet:", anchorProvider, provider);
+            console.log("Provider created with wallet:", anchorProvider);
 
             // Initialize the program with IDL and provider
-            const program = new Program(idl, programId, anchorProvider);
+            const program = new Program(idl, anchorProvider);
             console.log("Program initialized:", program);
 
             // Log the data to be passed into the createAsset method
