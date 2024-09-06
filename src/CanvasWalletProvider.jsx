@@ -7,7 +7,7 @@ import { toast } from "react-toastify";
 
 const WalletContext = createContext(null);
 
-const SOLANA_MAINNET_CHAIN_ID = "solana:103"; 
+const SOLANA_MAINNET_CHAIN_ID = "solana:101"; 
 
 export const CanvasWalletProvider = ({ children }) => {
     const [canvasClient, setCanvasClient] = useState(null);
@@ -101,9 +101,7 @@ export const CanvasWalletProvider = ({ children }) => {
     
             // Check if canvasClient expects base58Tx or transaction object
             const results = await canvasClient.signAndSendTransaction({
-                unsignedTx: {
-                    transaction: base58Tx, 
-                },
+                unsignedTx: base58Tx, // Pass base58Tx if canvasClient expects a base58 string
                 awaitCommitment: "confirmed",
                 chainId: SOLANA_MAINNET_CHAIN_ID,
             });
