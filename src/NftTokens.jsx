@@ -142,6 +142,7 @@ export const NFTDisplay = ({ mintData }) => {
             const provider = new AnchorProvider(connection, wallet, {
                 commitment: "confirmed",
               });
+              console.log("wallet: " , wallet)
     
             console.log("Provider created with wallet:", provider);
     
