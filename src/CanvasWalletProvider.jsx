@@ -1,7 +1,7 @@
-import { useState, useContext, createContext, useEffect, ReactNode } from 'react';
+import { useState, useContext, createContext, useEffect } from 'react';
 import { CanvasClient } from '@dscvr-one/canvas-client-sdk';
 import { registerCanvasWallet } from '@dscvr-one/canvas-wallet-adapter';
-import { clusterApiUrl, Connection, PublicKey, Transaction } from '@solana/web3.js';
+import { Connection, PublicKey } from '@solana/web3.js';
 import { encode } from 'bs58';
 import { toast } from "react-toastify";
 
@@ -80,7 +80,7 @@ export const CanvasWalletProvider = ({ children }) => {
         }
 
         try {
-            const network = process.env.NEXT_PUBLIC_SOLANA_RPC || "https://api.mainnet-beta.solana.com"; //"https://api.devnet.solana.com/"
+            const network = process.env.NEXT_PUBLIC_SOLANA_RPC || "https://api.devnet.solana.com/";
             const connection = new Connection(network, 'confirmed');
 
             // Fetch the latest blockhash
