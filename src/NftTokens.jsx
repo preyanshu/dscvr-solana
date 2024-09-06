@@ -138,43 +138,36 @@ export const NFTDisplay = ({ mintData }) => {
             // Create a connection to Solana Devnet
             const connection = new Connection(clusterApiUrl("devnet"), "confirmed");
     
-            // Create an AnchorProvider
+            console.log("Created connection:", connection);
+    
+            // Create an AnchorProvider with the wallet address and signTransaction function
             const provider = new AnchorProvider(connection, {
                 publicKey: new PublicKey(walletAddress),
-                signTransaction,
-              }, {
+                signTransaction
+            }, {
                 commitment: "confirmed",
-              });
-
-            //   console.log("wallet: " , wallet)
+            });
     
             console.log("Provider created with wallet:", provider);
     
             // Initialize the program with IDL and provider
             const program = new Program(idl, provider);
-            console.log("Program initialized");
-            console.log(program)
+            console.log("Program initialized:", program);
     
             // Log the data to be passed into the createAsset method
-            // console.log("Minting NFT with the following data:");
-            // console.log("NFT Name:", nftName);
-            // console.log("Username:", username);
-            // console.log("Follower Count (BN):", new BN(userData.followerCount).toString());
-            // console.log("DSCVR Points (BN):", new BN(userData.dscvrPoints).toString());
-            // console.log("Streak Day Count (BN):", new BN(userData.streak?.dayCount).toString());
-            console.log("wallet", walletAddress)
-
-            
+            console.log("Minting NFT with the following data:");
+            console.log("NFT Name:", nft.codeName);
+            console.log("Username:", userInfo.username);
+            console.log("Follower Count (BN):", new BN(userData.followerCount).toString());
+            console.log("DSCVR Points (BN):", new BN(userData.dscvrPoints).toString());
+            console.log("Streak Day Count (BN):", new BN(userData.streak?.dayCount).toString());
     
             // Prepare account details
             const accounts = {
                 signer: new PublicKey(walletAddress),
                 payer: new PublicKey(walletAddress),
-                // collection: new PublicKey('BFicfuae445azP2knrhotFi223fiuuE1cTQ12KtyvkLa'),
                 asset: assetPublicKey,
                 database: new PublicKey('5ahNFeoYAS4HayZWK6osa6ZiocNojNJcfzgUJASicRbf'),
-                // mplCoreProgram: MPL_CORE_PROGRAM_ID,
-                // systemProgram: SystemProgram.programId,
             };
     
             console.log("Accounts info:", accounts);
@@ -182,11 +175,11 @@ export const NFTDisplay = ({ mintData }) => {
             // Mint the NFT by calling the program's createAsset method
             const tx = await program.methods
                 .createAsset(
-                    "follower_count_1",           // Some string identifier
-                    new BN(50),       // Convert userData to BN (BigNumber)
-                    new BN(70),         // Convert DSCVR points to BN
-                    new BN(80),    // Convert streak day count to BN
-                    "lol"                              // Username string
+                    "follower_count_1",                     // NFT code name
+                    new BN(userData.followerCount),   // Convert userData to BN (BigNumber)
+                    new BN(userData.dscvrPoints),     // Convert DSCVR points to BN
+                    new BN(userData.streak?.dayCount), // Convert streak day count to BN
+                    userInfo.username                 // Username string
                 )
                 .accounts(accounts)
                 .signers([asset])
@@ -194,12 +187,15 @@ export const NFTDisplay = ({ mintData }) => {
     
             console.log("Transaction successful, tx hash:", tx);
     
+            // Provide feedback or update UI after successful minting
+            toast.success("NFT successfully minted!");
         } catch (error) {
             // Handle any errors that occur during the transaction
-            // console.log("transaction", tx)
             console.error("Error during minting process:", error);
+            toast.error("Failed to mint NFT.");
         }
     };
+    
 
     return (
         <div className="flex flex-wrap text-xs justify-around p-4">
