@@ -101,7 +101,9 @@ export const CanvasWalletProvider = ({ children }) => {
     
             // Check if canvasClient expects base58Tx or transaction object
             const results = await canvasClient.signAndSendTransaction({
-                unsignedTx: base58Tx, // Pass base58Tx if canvasClient expects a base58 string
+                unsignedTx: {
+                    transaction: base58Tx, 
+                },
                 awaitCommitment: "confirmed",
                 chainId: SOLANA_MAINNET_CHAIN_ID,
             });
