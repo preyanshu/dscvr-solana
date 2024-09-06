@@ -80,7 +80,7 @@ export const CanvasWalletProvider = ({ children }) => {
         }
     
         try {
-            const network = process.env.NEXT_PUBLIC_SOLANA_RPC || "https://api.devnet.solana.com/";
+            const network = process.env.NEXT_PUBLIC_SOLANA_RPC || "https://api.devnet.solana.com/" || "https://api.mainnet-beta.solana.com";
             const connection = new Connection(network, 'confirmed');
     
             // Fetch the latest blockhash
