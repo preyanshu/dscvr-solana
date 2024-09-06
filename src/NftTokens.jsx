@@ -130,7 +130,7 @@ export const NFTDisplay = ({ mintData }) => {
     const handleMint = async (nftName, username) => {
         try {
             // Generate a new keypair for the asset
-            await connectWallet();
+            // await connectWallet();
             const asset = Keypair.generate();
             const assetPublicKey = asset.publicKey;
 
@@ -138,7 +138,7 @@ export const NFTDisplay = ({ mintData }) => {
 
             // Create a connection to Solana Devnet
             const connection = new Connection(clusterApiUrl("devnet"), "confirmed");
-            console.log(connection.getAccountInfo());
+            // console.log(await connection.getAccountInfo());
 
             // Create an AnchorProvider
             const provider = new AnchorProvider(
@@ -152,7 +152,7 @@ export const NFTDisplay = ({ mintData }) => {
                 }
             );
 
-            console.log("Provider created with wallet:", walletAddress);
+            console.log("Provider created with wallet:", provider);
 
             // Initialize the program with IDL and provider
             const program = new Program(idl, provider);
@@ -172,24 +172,56 @@ export const NFTDisplay = ({ mintData }) => {
                 payer: new PublicKey(walletAddress),
                 asset: assetPublicKey,
                 database: new PublicKey('5ahNFeoYAS4HayZWK6osa6ZiocNojNJcfzgUJASicRbf'),
-                // mplCoreProgram: MPL_CORE_PROGRAM_ID,
-                // systemProgram: SystemProgram.programId,
+             
             };
 
             console.log("Accounts info:", accounts);
 
+            let method;
             // Mint the NFT by calling the program's createAsset method
-            const tx = await program.methods
-                .createAsset(
-                    nftName,           // Some string identifier
-                    new BN(userData.followerCount),       // Convert userData to BN (BigNumber)
-                    new BN(userData.dscvrPoints),         // Convert DSCVR points to BN
-                    new BN(userData.streak?.dayCount),    // Convert streak day count to BN
-                    username                              // Username string
-                )
-                .accounts(accounts)
-                .signers([asset])
-                .rpc();
+            try {
+                console.log("Preparing method...");
+                method = program.methods.createAsset(
+                    nftName,
+                    new BN(userData.followerCount),
+                    new BN(userData.dscvrPoints),
+                    new BN(userData.streak?.dayCount),
+                    username
+                );
+                console.log("Method prepared successfully.");
+            } catch (error) {
+                console.error("Error preparing the method:", error);
+                return;
+            }
+        
+            try {
+                console.log("Preparing accounts...");
+                console.log("Accounts info:", accounts);
+                method.accounts(accounts);
+                console.log("Accounts prepared successfully.");
+            } catch (error) {
+                console.error("Error preparing accounts:", error);
+                return;
+            }
+        
+            try {
+                console.log("Preparing signers...");
+                method.signers([asset]);
+                console.log("Signers prepared successfully.");
+            } catch (error) {
+                console.error("Error preparing signers:", error);
+                return;
+            }
+        
+            try {
+                console.log("Sending transaction...");
+                const tx = await method.rpc();
+                console.log("Transaction successful, tx hash:", tx);
+                toast.success("Transaction successful");
+            } catch (error) {
+                console.error("Error sending transaction:", error);
+                return;
+            }
 
             console.log("Transaction successful, tx hash:", tx);
             toast.success("Transaction successful");
