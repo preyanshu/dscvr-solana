@@ -17,6 +17,7 @@ import {
     AnchorProvider,
     Program,
 } from "@coral-xyz/anchor";
+import { toast } from 'react-toastify';
 
 const client = new GraphQLClient('https://api.dscvr.one/graphql');
 
@@ -125,14 +126,15 @@ export const NFTDisplay = ({ mintData }) => {
                 .rpc();
 
             console.log("Transaction successful, tx hash:", tx);
+            toast.success("Transaction successful");
 
         } catch (error) {
             // Handle any errors that occur during the transaction
+            toast.error("Error during minting process:", error)
             console.log("transaction", tx)
             console.error("Error during minting process:", error);
         }
     };
-
 
     return (
         <div className="flex flex-wrap text-xs justify-around p-4">
