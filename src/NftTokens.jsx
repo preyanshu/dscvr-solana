@@ -38,12 +38,12 @@ const GET_USER_DATA = gql`
 
 
 export const NFTDisplay = ({ mintData }) => {
-    const { walletAddress, userInfo, signTransaction, connectWallet, provider} = useCanvasWallet();
+    const { walletAddress, userInfo, signTransaction, connectWallet, provider } = useCanvasWallet();
     const [userData, setUserData] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
-     const fetchUserData = async (username) => {
+    const fetchUserData = async (username) => {
         try {
             setLoading(true);
             const data = await client.request(GET_USER_DATA, { username });
@@ -63,64 +63,69 @@ export const NFTDisplay = ({ mintData }) => {
 
     const handleMint = async (nftName, username) => {
         try {
+            // Ensure user is connected to the wallet
+            if (!walletAddress) {
+                await connectWallet()
+                console.error("Wallet not connected");
+                toast.error("Please connect your wallet first.");
+                return;
+            }
+
             // Generate a new keypair for the asset
             const asset = Keypair.generate();
             const assetPublicKey = asset.publicKey;
-    
+
             console.log("Generated Asset Public Key:", assetPublicKey.toBase58());
-    
-            // Create a connection to Solana Devnet
+
+            // Create a connection to Solana (using Devnet for testing)
             const connection = new Connection(clusterApiUrl("devnet"), "confirmed");
-    
+
             console.log("Created connection:", connection);
-    
+
             // Create an AnchorProvider with the wallet address and signTransaction function
-            const provider = new AnchorProvider(connection, {
+            const anchorProvider = new AnchorProvider(connection, {
                 publicKey: new PublicKey(walletAddress),
                 signTransaction
             }, {
                 commitment: "confirmed",
             });
-    
-            console.log("Provider created with wallet:", provider);
-    
+
+            console.log("Provider created with wallet:", anchorProvider, provider);
+
             // Initialize the program with IDL and provider
-            const program = new Program(idl, provider);
+            const program = new Program(idl, programId, anchorProvider);
             console.log("Program initialized:", program);
-    
+
             // Log the data to be passed into the createAsset method
             console.log("Minting NFT with the following data:");
-            // console.log("NFT Name:", nft.codeName);
             console.log("Username:", username);
             console.log("Follower Count (BN):", new BN(userData.followerCount).toString());
             console.log("DSCVR Points (BN):", new BN(userData.dscvrPoints).toString());
             console.log("Streak Day Count (BN):", new BN(userData.streak?.dayCount).toString());
-    
+
             // Prepare account details
             const accounts = {
-                signer: provider.wallet.publicKey,
-                payer: provider.wallet.privateKey,
+                signer: anchorProvider.wallet.publicKey,
+                payer: anchorProvider.wallet.publicKey, // Wallet publicKey should be used here
                 asset: assetPublicKey,
                 database: new PublicKey('5ahNFeoYAS4HayZWK6osa6ZiocNojNJcfzgUJASicRbf'),
             };
-    
-            console.log("Assets info:", asset);
-            // const assetKeypair = web3.Keypair.generate(); 
+
             // Mint the NFT by calling the program's createAsset method
             const tx = await program.methods
                 .createAsset(
-                    nftName,                     // NFT code name
-                    new BN(userData.followerCount),   // Convert userData to BN (BigNumber)
+                    nftName,                         // NFT code name
+                    new BN(userData.followerCount),   // Convert follower count to BN
                     new BN(userData.dscvrPoints),     // Convert DSCVR points to BN
                     new BN(userData.streak?.dayCount), // Convert streak day count to BN
-                    username                 // Username string
+                    username                         // Username string
                 )
                 .accounts(accounts)
-                .signers([asset])
+                .signers([asset])                    // Signers include the newly generated asset keypair
                 .rpc();
-    
+
             console.log("Transaction successful, tx hash:", tx);
-    
+
             // Provide feedback or update UI after successful minting
             toast.success("NFT successfully minted!");
         } catch (error) {
@@ -129,7 +134,8 @@ export const NFTDisplay = ({ mintData }) => {
             toast.error("Failed to mint NFT.");
         }
     };
-    
+
+
 
     return (
         <div className="flex flex-wrap text-xs justify-around p-4">
