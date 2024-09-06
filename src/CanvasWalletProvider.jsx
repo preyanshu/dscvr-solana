@@ -1,13 +1,13 @@
-import { useState, useContext, createContext, useEffect } from 'react';
+import { useState, useContext, createContext, useEffect, ReactNode } from 'react';
 import { CanvasClient } from '@dscvr-one/canvas-client-sdk';
 import { registerCanvasWallet } from '@dscvr-one/canvas-wallet-adapter';
-import { Connection, PublicKey, Transaction } from '@solana/web3.js';
+import { clusterApiUrl, Connection, PublicKey, Transaction } from '@solana/web3.js';
 import { encode } from 'bs58';
 import { toast } from "react-toastify";
 
 const WalletContext = createContext(null);
 
-const SOLANA_MAINNET_CHAIN_ID = "solana:101"; 
+const SOLANA_MAINNET_CHAIN_ID = "solana:103"; 
 
 export const CanvasWalletProvider = ({ children }) => {
     const [canvasClient, setCanvasClient] = useState(null);
