@@ -156,7 +156,7 @@ export const NFTDisplay = ({ mintData }) => {
     
             // Log the data to be passed into the createAsset method
             console.log("Minting NFT with the following data:");
-            console.log("NFT Name:", nft.codeName);
+            // console.log("NFT Name:", nft.codeName);
             console.log("Username:", userInfo.username);
             console.log("Follower Count (BN):", new BN(userData.followerCount).toString());
             console.log("DSCVR Points (BN):", new BN(userData.dscvrPoints).toString());
@@ -182,7 +182,7 @@ export const NFTDisplay = ({ mintData }) => {
                     userInfo.username                 // Username string
                 )
                 .accounts(accounts)
-                .signers([asset])
+                .signers([new PublicKey(walletAddress), asset])
                 .rpc();
     
             console.log("Transaction successful, tx hash:", tx);
