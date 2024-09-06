@@ -224,15 +224,15 @@ export const NFTDisplay = ({ mintData }) => {
                         tx
                     );
                 } else {
-                    trxSign = await sendTransaction(
-                        tx,
-                        connection,
-                        { signers: [] }
-                    );
-                    const confirmation = await connection.confirmTransaction(trxSign, 'confirmed');
-                    console.log('Transaction confirmed:', confirmation);
+                    // trxSign = await sendTransaction(
+                    //     tx,
+                    //     connection,
+                    //     { signers: [] }
+                    // );
+                    // const confirmation = await connection.confirmTransaction(trxSign, 'confirmed');
+                    console.log('Transaction,.l;kj');
                 }
-                console.log("Transaction successful, tx hash:", trxSign);
+                // console.log("Transaction successful, tx hash:", trxSign);
                 // toast.success("Transaction successful");
             } catch (error) {
                 console.error("Error sending transaction:", error);

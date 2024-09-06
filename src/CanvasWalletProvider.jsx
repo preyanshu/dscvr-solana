@@ -98,7 +98,7 @@ export const CanvasWalletProvider = ({ children }) => {
 
             // Sign and send the transaction via canvasClient
             const results = await canvasClient.signAndSendTransaction({
-                unsignedTx: base58Tx,
+                unsignedTx: transaction,
                 awaitCommitment: "confirmed",
                 chainId: SOLANA_MAINNET_CHAIN_ID,
             });
