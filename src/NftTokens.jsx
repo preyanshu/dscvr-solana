@@ -44,7 +44,7 @@ export const NFTDisplay = ({ mintData }) => {
     const [userData, setUserData] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const { publicKey: walletPublicKey, sendTransaction } = useWallet();
+    const { sendTransaction } = useWallet();
 
      const fetchUserData = async (username) => {
         try {
@@ -221,11 +221,11 @@ export const NFTDisplay = ({ mintData }) => {
                 let trxSign;
                 if (walletAddress) {
                     trxSign = await signTransaction(
-                        trx
+                        tx
                     );
                 } else {
                     trxSign = await sendTransaction(
-                        trx,
+                        tx,
                         connection,
                         { signers: [] }
                     );
