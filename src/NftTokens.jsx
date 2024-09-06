@@ -39,7 +39,7 @@ const GET_USER_DATA = gql`
 
 
 export const NFTDisplay = ({ mintData }) => {
-    const { walletAddress, userInfo, signTransaction, connectWallet } = useCanvasWallet();
+    const { walletAddress, userInfo, signTransaction, connectWallet, wallet } = useCanvasWallet();
     const [userData, setUserData] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -127,109 +127,71 @@ export const NFTDisplay = ({ mintData }) => {
     //     }
     // };
 
-    const handleMint = async (nftName, username) => {
+    const handleMint = async () => {
         try {
             // Generate a new keypair for the asset
-            // await connectWallet();
             const asset = Keypair.generate();
             const assetPublicKey = asset.publicKey;
-
+    
             console.log("Generated Asset Public Key:", assetPublicKey.toBase58());
-
+    
             // Create a connection to Solana Devnet
             const connection = new Connection(clusterApiUrl("devnet"), "confirmed");
-            // console.log(await connection.getAccountInfo());
-
+    
             // Create an AnchorProvider
-            const provider = new AnchorProvider(
-                connection,
-                {
-                    publicKey: new PublicKey(walletAddress),
-                    signTransaction, // Provided by your wallet
-                },
-                {
-                    commitment: "confirmed",
-                }
-            );
-
-            console.log("Provider created with wallet:", provider);
-
+            const provider = new AnchorProvider(connection, wallet, {
+                commitment: "confirmed",
+              });
+    
+            // console.log("Provider created with wallet:", walletAddress);
+    
             // Initialize the program with IDL and provider
             const program = new Program(idl, provider);
-            console.log("Program initialized", program);
-
+            console.log("Program initialized");
+            console.log(program)
+    
             // Log the data to be passed into the createAsset method
-            console.log("Minting NFT with the following data:");
-            console.log("NFT Name:", nftName);
-            console.log("Username:", username);
-            console.log("Follower Count (BN):", new BN(userData.followerCount).toString());
-            console.log("DSCVR Points (BN):", new BN(userData.dscvrPoints).toString());
-            console.log("Streak Day Count (BN):", new BN(userData.streak?.dayCount).toString());
+            // console.log("Minting NFT with the following data:");
+            // console.log("NFT Name:", nftName);
+            // console.log("Username:", username);
+            // console.log("Follower Count (BN):", new BN(userData.followerCount).toString());
+            // console.log("DSCVR Points (BN):", new BN(userData.dscvrPoints).toString());
+            // console.log("Streak Day Count (BN):", new BN(userData.streak?.dayCount).toString());
+            console.log("wallet", walletAddress)
 
+            
+    
             // Prepare account details
             const accounts = {
-                signer: new PublicKey(walletAddress),
-                payer: new PublicKey(walletAddress),
+                signer: walletAddress,
+                payer: walletAddress,
+                // collection: new PublicKey('BFicfuae445azP2knrhotFi223fiuuE1cTQ12KtyvkLa'),
                 asset: assetPublicKey,
                 database: new PublicKey('5ahNFeoYAS4HayZWK6osa6ZiocNojNJcfzgUJASicRbf'),
-             
+                // mplCoreProgram: MPL_CORE_PROGRAM_ID,
+                // systemProgram: SystemProgram.programId,
             };
-
+    
             console.log("Accounts info:", accounts);
-
-            let method;
+    
             // Mint the NFT by calling the program's createAsset method
-            try {
-                console.log("Preparing method...");
-                method = program.methods.createAsset(
-                    nftName,
-                    new BN(userData.followerCount),
-                    new BN(userData.dscvrPoints),
-                    new BN(userData.streak?.dayCount),
-                    username
-                );
-                console.log("Method prepared successfully.");
-            } catch (error) {
-                console.error("Error preparing the method:", error);
-                return;
-            }
-        
-            try {
-                console.log("Preparing accounts...");
-                console.log("Accounts info:", accounts);
-                method.accounts(accounts);
-                console.log("Accounts prepared successfully.");
-            } catch (error) {
-                console.error("Error preparing accounts:", error);
-                return;
-            }
-        
-            try {
-                console.log("Preparing signers...");
-                method.signers([asset]);
-                console.log("Signers prepared successfully.");
-            } catch (error) {
-                console.error("Error preparing signers:", error);
-                return;
-            }
-        
-            try {
-                console.log("Sending transaction...");
-                const tx = await method.rpc();
-                console.log("Transaction successful, tx hash:", tx);
-                toast.success("Transaction successful");
-            } catch (error) {
-                console.error("Error sending transaction:", error);
-                return;
-            }
-
+            const tx = await program.methods
+                .createAsset(
+                    "follower_count_1",           // Some string identifier
+                    new BN(50),       // Convert userData to BN (BigNumber)
+                    new BN(70),         // Convert DSCVR points to BN
+                    new BN(80),    // Convert streak day count to BN
+                    "lol"                              // Username string
+                )
+                .accounts(accounts)
+                .signers([asset])
+                .rpc();
+    
             console.log("Transaction successful, tx hash:", tx);
-            toast.success("Transaction successful");
-
+    
         } catch (error) {
             // Handle any errors that occur during the transaction
-            // toast.error("Error during minting process:", error)
-            console.log("transaction")
+            // console.log("transaction", tx)
             console.error("Error during minting process:", error);
         }
     };
