@@ -143,7 +143,7 @@ export const NFTDisplay = ({ mintData }) => {
                 commitment: "confirmed",
               });
     
-            // console.log("Provider created with wallet:", walletAddress);
+            console.log("Provider created with wallet:", provider);
     
             // Initialize the program with IDL and provider
             const program = new Program(idl, provider);
