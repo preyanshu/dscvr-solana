@@ -170,7 +170,7 @@ export const NFTDisplay = ({ mintData }) => {
                 database: new PublicKey('5ahNFeoYAS4HayZWK6osa6ZiocNojNJcfzgUJASicRbf'),
             };
     
-            console.log("Accounts info:", accounts);
+            console.log("Assets info:", asset);
     
             // Mint the NFT by calling the program's createAsset method
             const tx = await program.methods
@@ -182,7 +182,7 @@ export const NFTDisplay = ({ mintData }) => {
                     username                 // Username string
                 )
                 .accounts(accounts)
-                // .signers([asset])
+                .signers([asset])
                 .rpc();
     
             console.log("Transaction successful, tx hash:", tx);
