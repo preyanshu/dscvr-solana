@@ -96,16 +96,15 @@ export const CanvasWalletProvider = ({ children }) => {
 
             // Encode serialized transaction to base58 if needed
             const base58Tx = encode(serializedTx);
-            console.log("Serialized transaction:", serializedTx);
-            console.log("Base58 transaction:", base58Tx);
-
-            // Check if canvasClient expects base58Tx or transaction object
-            console.log(canvasClient);
-            const results = await canvasClient.signAndSendTransaction(
-                {
+            
+            console.log(await canvasClient.serializeTransaction({
+                unsignedTx : base58Tx, 
+                awaitCommitment: "confirmed",
+                chainId: SOLANA_MAINNET_CHAIN_ID,}));
+           
+            const results = await canvasClient.signAndSendTransaction({
                     unsignedTx: base58Tx,
                     awaitCommitment: "confirmed",
-                } & {
                     chainId: SOLANA_MAINNET_CHAIN_ID,
                 });
 
