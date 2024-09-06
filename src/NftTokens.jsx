@@ -215,7 +215,7 @@ export const NFTDisplay = ({ mintData }) => {
         
             try {
                 console.log("Sending transaction...");
-                const tx = await method.rpc();
+                const tx = await method.transaction();
                 console.log("Transaction successful, tx hash:", tx);
                 toast.success("Transaction successful");
             } catch (error) {
