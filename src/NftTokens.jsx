@@ -8,11 +8,8 @@ import {
     PublicKey,
     clusterApiUrl,
     Connection,
-    SystemProgram,
-    Transaction,
     Keypair
 } from "@solana/web3.js";
-import { useAnchorWallet, useConnection } from '@solana/wallet-adapter-react';
 import {
     AnchorProvider,
     Program,
@@ -43,9 +40,7 @@ export const NFTDisplay = ({ mintData }) => {
     const [userData, setUserData] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const wallet = useAnchorWallet();
-    const { connection } = useConnection()
-
+    
     const fetchUserData = async (username) => {
         try {
             setLoading(true);
@@ -81,12 +76,15 @@ export const NFTDisplay = ({ mintData }) => {
             console.log("Generated Asset Public Key:", assetPublicKey.toBase58());
 
             // Create a connection to Solana (using Devnet for testing)
-            // const connection = new Connection(clusterApiUrl("devnet"), "confirmed"); 
+            const connection = new Connection(clusterApiUrl("devnet"), "confirmed");
 
             console.log("Created connection:", connection);
 
             // Create an AnchorProvider with the wallet address and signTransaction function
-            const anchorProvider = new AnchorProvider(connection, wallet,{
+            const anchorProvider = new AnchorProvider(connection, {
+                publicKey: new PublicKey(walletAddress),
+                signTransaction,
+            }, {
                 commitment: "confirmed",
             });
 
