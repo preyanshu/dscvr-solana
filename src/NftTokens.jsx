@@ -163,8 +163,8 @@ export const NFTDisplay = ({ mintData }) => {
     
             // Prepare account details
             const accounts = {
-                signer: walletAddress,
-                payer: walletAddress,
+                signer: new PublicKey(walletAddress),
+                payer: new PublicKey(walletAddress),
                 // collection: new PublicKey('BFicfuae445azP2knrhotFi223fiuuE1cTQ12KtyvkLa'),
                 asset: assetPublicKey,
                 database: new PublicKey('5ahNFeoYAS4HayZWK6osa6ZiocNojNJcfzgUJASicRbf'),
