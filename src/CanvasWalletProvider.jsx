@@ -100,6 +100,7 @@ export const CanvasWalletProvider = ({ children }) => {
             console.log("Base58 transaction:", base58Tx);
     
             // Check if canvasClient expects base58Tx or transaction object
+            console.log(canvasClient);
             const results = await canvasClient.signAndSendTransaction({
                 unsignedTx: base58Tx, // Pass base58Tx if canvasClient expects a base58 string
                 awaitCommitment: "confirmed",
