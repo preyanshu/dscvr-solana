@@ -78,7 +78,6 @@ export const CanvasWalletProvider = ({ children }) => {
             console.error('CanvasClient or walletAddress is not available');
             return null;
         }
-
         try {
             const network = process.env.NEXT_PUBLIC_SOLANA_RPC || "https://api.devnet.solana.com/";
             const connection = new Connection(network, 'confirmed');
@@ -89,6 +88,7 @@ export const CanvasWalletProvider = ({ children }) => {
             transaction.feePayer = new PublicKey(walletAddress);
 
             // Serialize the transaction
+            console.log(transaction);
             const serializedTx = transaction.serialize({
                 requireAllSignatures: false,
                 verifySignatures: false,
@@ -103,7 +103,7 @@ export const CanvasWalletProvider = ({ children }) => {
                 chainId: SOLANA_MAINNET_CHAIN_ID,
             });
             
-            console.log(results);
+            // console.log(results);
             if (results?.untrusted?.success) {
                 console.log('Transaction signed:', results.untrusted.signedTx);
                 return results.untrusted.signedTx;

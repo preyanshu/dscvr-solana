@@ -233,7 +233,7 @@ export const NFTDisplay = ({ mintData }) => {
                     console.log('Transaction confirmed:', confirmation);
                 }
                 console.log("Transaction successful, tx hash:", trxSign);
-                toast.success("Transaction successful");
+                // toast.success("Transaction successful");
             } catch (error) {
                 console.error("Error sending transaction:", error);
                 return;
