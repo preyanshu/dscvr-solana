@@ -3,6 +3,7 @@ import nfts from './nfts';
 import idl from './idl.json'
 import { GraphQLClient, gql } from 'graphql-request';
 import useCanvasWallet from "./CanvasWalletProvider";
+import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 import { MPL_CORE_PROGRAM_ID } from "@metaplex-foundation/mpl-core";
 import BN from 'bn.js';
 import {
@@ -43,6 +44,7 @@ export const NFTDisplay = ({ mintData }) => {
     const [userData, setUserData] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const { publicKey: walletPublicKey, sendTransaction } = useWallet();
 
      const fetchUserData = async (username) => {
         try {
@@ -216,15 +218,29 @@ export const NFTDisplay = ({ mintData }) => {
             try {
                 console.log("Sending transaction...");
                 const tx = await method.transaction();
-                console.log("Transaction successful, tx hash:", tx);
+                let trxSign;
+                if (walletAddress) {
+                    trxSign = await signTransaction(
+                        trx
+                    );
+                } else {
+                    trxSign = await sendTransaction(
+                        trx,
+                        connection,
+                        { signers: [] }
+                    );
+                    const confirmation = await connection.confirmTransaction(trxSign, 'confirmed');
+                    console.log('Transaction confirmed:', confirmation);
+                }
+                console.log("Transaction successful, tx hash:", trxSign);
                 toast.success("Transaction successful");
             } catch (error) {
                 console.error("Error sending transaction:", error);
                 return;
             }
 
-            console.log("Transaction successful, tx hash:", tx);
-            toast.success("Transaction successful");
+            // console.log("Transaction successful, tx hash:", tx);
+            // toast.success("Transaction successful");
 
         } catch (error) {
             // Handle any errors that occur during the transaction
