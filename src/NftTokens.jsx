@@ -74,13 +74,14 @@ export const NFTDisplay = ({ mintData }) => {
     
             const anchorProvider = new AnchorProvider(connection, {
                 publicKey: new PublicKey(walletAddress),
-                signTransaction, 
+                signTransaction: async (transaction) => {
+                    print("Signing transaction with user's wallet");
+                    return await signTransaction(transaction);
+                },
                 signAllTransactions: async (txs) => {
-                    print("Signing all transactions" , txs);
+                    print("Signing all transactions", txs);
                     return await Promise.all(txs.map(signTransaction));
                 }
-
-
             }, {
                 commitment: "confirmed",
             });
@@ -93,11 +94,11 @@ export const NFTDisplay = ({ mintData }) => {
                 asset: assetPublicKey,
                 database: new PublicKey('5ahNFeoYAS4HayZWK6osa6ZiocNojNJcfzgUJASicRbf'),
             };
-
-            console.log("Signers:", [anchorProvider.wallet.publicKey.toString(), asset.publicKey.toString()]);
-
     
-            const transaction = await program.methods
+            console.log("Signers:", [anchorProvider.wallet.publicKey.toString(), asset.publicKey.toString()]);
+    
+            // Create the transaction
+            const tx = await program.methods
                 .createAsset(
                     nftName,
                     new BN(userData.followerCount),
@@ -106,20 +107,25 @@ export const NFTDisplay = ({ mintData }) => {
                     username
                 )
                 .accounts(accounts)
-                .signers([ asset]) 
-                .rpc(); 
+                .signers([asset])
+                .transaction();
     
-            // return transaction;
-
-            console.log("Transaction", transaction)
+            // Serialize and sign with asset
+            const signedTx = await anchorProvider.signTransaction(tx);
+    
+            // Send transaction with asset as the first signer
+            const txid = await connection.sendRawTransaction(signedTx.serialize());
+            console.log("Transaction ID", txid);
+    
+            toast.success("NFT successfully minted!");
+            return txid;
     
         } catch (error) {
             console.error("Error during minting process:", error);
             toast.error("Failed to mint NFT.");
         }
-    
-        
     };
+    
 
     
     // const handleMint = async (nftName, username) => {
