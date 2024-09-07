@@ -48,7 +48,7 @@ export const CanvasWalletProvider = ({ children }) => {
                     console.error('Failed to retrieve user information');
                 }
                 await canvasClient.ready();
-                console.log("CanvasClient is ready");
+                console.log("CanvasClient is ready", canvasClient);
 
                 const response = await canvasClient.connectWallet(SOLANA_MAINNET_CHAIN_ID);
 
