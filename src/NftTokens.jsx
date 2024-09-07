@@ -4,6 +4,7 @@ import idl from './idl.json'
 import { GraphQLClient, gql } from 'graphql-request';
 import useCanvasWallet from "./CanvasWalletProvider";
 import BN from 'bn.js';
+import { encode } from 'bs58';
 import {
     PublicKey,
     clusterApiUrl,
@@ -62,6 +63,7 @@ export const NFTDisplay = ({ mintData }) => {
 
     const handleMint = async (nftName, username) => {
         try {
+            // Check if wallet is connected
             if (!walletAddress) {
                 await connectWallet();
                 console.error("Wallet not connected");
@@ -69,23 +71,37 @@ export const NFTDisplay = ({ mintData }) => {
                 return null;
             }
     
+            // Generate a new asset Keypair
             const asset = Keypair.generate();
             const assetPublicKey = asset.publicKey;
             const connection = new Connection(clusterApiUrl("devnet"), "confirmed");
     
+            // Initialize AnchorProvider
             const anchorProvider = new AnchorProvider(
                 connection,
                 {
                     publicKey: new PublicKey(walletAddress),
-                    signTransaction
+                    signTransaction: async (transaction) => {
+                        // Convert transaction to base58 format
+                        const serializedTx = transaction.serialize({
+                            requireAllSignatures: false,
+                            verifySignatures: false,
+                        });
+                        const base58Tx = encode(serializedTx);
+    
+                        // Use DSCVR's signTransaction method
+                        return await signTransaction(base58Tx);
+                    }
                 },
                 {
                     commitment: "confirmed",
                 }
             );
     
+            // Initialize the program
             const program = new Program(idl, anchorProvider);
     
+            // Define accounts for the transaction
             const accounts = {
                 signer: anchorProvider.wallet.publicKey,
                 payer: anchorProvider.wallet.publicKey,
@@ -103,7 +119,7 @@ export const NFTDisplay = ({ mintData }) => {
                     username
                 )
                 .accounts(accounts)
-                .instruction(); // Generate instruction instead of RPC call
+                .instruction(); // Generate instruction
     
             const tx = new Transaction().add(transaction);
     
@@ -112,19 +128,21 @@ export const NFTDisplay = ({ mintData }) => {
             tx.recentBlockhash = blockhash;
             tx.feePayer = new PublicKey(walletAddress);
     
-            // Part 1: Sign with the wallet
+            // Sign the transaction using DSCVR's signTransaction method
             const signedTx = await anchorProvider.wallet.signTransaction(tx);
     
-            // Part 2: Sign with the asset keypair
+            // Sign with the asset keypair
             signedTx.partialSign(asset);
     
-            // Send the transaction
-            // const signature = await connection.sendRawTransaction(signedTx.serialize(), {
-            //     skipPreflight: false,
-            //     preflightCommitment: "confirmed",
-            // });
-
-            const res = await signTransaction(signedTx);
+            // Serialize and send the transaction
+            const serializedTx = signedTx.serialize({
+                requireAllSignatures: false,
+                verifySignatures: false,
+            });
+            const base58Tx = encode(serializedTx);
+    
+            // Send the transaction using DSCVR's signTransaction
+            const res = await signTransaction(base58Tx);
     
             console.log("Transaction signature:", res);
     
@@ -134,7 +152,7 @@ export const NFTDisplay = ({ mintData }) => {
         }
     
         return null;
-    };
+    };    
 
     
     // const handleMint = async (nftName, username) => {
