@@ -4,13 +4,11 @@ import idl from './idl.json'
 import { GraphQLClient, gql } from 'graphql-request';
 import useCanvasWallet from "./CanvasWalletProvider";
 import BN from 'bn.js';
-import { encode } from 'bs58';
 import {
     PublicKey,
     clusterApiUrl,
     Connection,
-    Keypair,
-    Transaction
+    Keypair
 } from "@solana/web3.js";
 import {
     AnchorProvider,
@@ -74,27 +72,24 @@ export const NFTDisplay = ({ mintData }) => {
             const assetPublicKey = asset.publicKey;
             const connection = new Connection(clusterApiUrl("devnet"), "confirmed");
     
-            const anchorProvider = new AnchorProvider(
-                connection,
-                {
-                    publicKey: new PublicKey(walletAddress),
-                    signTransaction: signTransaction // Use the provided signTransaction function
-                },
-                {
-                    commitment: "confirmed",
-                }
-            );
+            const anchorProvider = new AnchorProvider(connection, {
+                publicKey: new PublicKey(walletAddress),
+                signTransaction
+
+
+            }, {
+                commitment: "confirmed",
+            });
     
             const program = new Program(idl, anchorProvider);
     
             const accounts = {
                 signer: anchorProvider.wallet.publicKey,
                 payer: anchorProvider.wallet.publicKey,
-                asset: assetPublicKey,
+                // asset: assetPublicKey,
                 database: new PublicKey('5ahNFeoYAS4HayZWK6osa6ZiocNojNJcfzgUJASicRbf'),
             };
     
-            // Create transaction instructions
             const transaction = await program.methods
                 .createAsset(
                     nftName,
@@ -104,35 +99,12 @@ export const NFTDisplay = ({ mintData }) => {
                     username
                 )
                 .accounts(accounts)
-                .signers([asset])
-                .instruction(); // Generate instruction
+                // .signers([asset])
+                .rpc(); 
     
-            const tx = new Transaction().add(transaction);
-    
-            // Fetch recent blockhash and assign the feePayer
-            // const { blockhash } = await connection.getLatestBlockhash();
-            // tx.recentBlockhash = blockhash;
-            // tx.feePayer = new PublicKey(walletAddress);
-    
-            // // Sign the transaction with the wallet
-            // const signedTx = await anchorProvider.wallet.signTransaction(tx);
-    
-            // // Sign with the asset keypair
-            // signedTx.partialSign(asset);
-    
-            // // Serialize and send the transaction
-            // const serializedTx = signedTx.serialize({
-            //     requireAllSignatures: false,
-            //     verifySignatures: false,
-            // });
-    
-            // // Encode the serialized transaction to base58
-            // const base58Tx = encode(serializedTx);
-    
-            // Sign and send the transaction using DSCVR's function
-            const results = await signTransaction(tx);
-    
-            console.log("Transaction signature:", results);
+            // return transaction;
+
+            console.log("Transaction", transaction)
     
         } catch (error) {
             console.error("Error during minting process:", error);
@@ -141,7 +113,23 @@ export const NFTDisplay = ({ mintData }) => {
     
         return null;
     };
- 
+
+    
+    // const handleMint = async (nftName, username) => {
+    //     const transaction = await mintNFT(nftName, username);
+    //     if (transaction) {
+    //         const signedTx = await signTransaction(transaction);
+    //         if (signedTx) {
+    //             console.log("NFT minted successfully!");
+    //             toast.success("NFT successfully minted!");
+    //         } else {
+    //             toast.error("Failed to sign and send the transaction.");
+    //         }
+    //     }
+    // };
+    
+
+
 
     return (
         <div className="flex flex-wrap text-xs justify-around p-4">
