@@ -8,7 +8,8 @@ import {
     PublicKey,
     clusterApiUrl,
     Connection,
-    Keypair
+    Keypair,
+    Transaction
 } from "@solana/web3.js";
 import {
     AnchorProvider,
@@ -72,14 +73,16 @@ export const NFTDisplay = ({ mintData }) => {
             const assetPublicKey = asset.publicKey;
             const connection = new Connection(clusterApiUrl("devnet"), "confirmed");
     
-            const anchorProvider = new AnchorProvider(connection, {
-                publicKey: new PublicKey(walletAddress),
-                signTransaction
-
-
-            }, {
-                commitment: "confirmed",
-            });
+            const anchorProvider = new AnchorProvider(
+                connection,
+                {
+                    publicKey: new PublicKey(walletAddress),
+                    signTransaction
+                },
+                {
+                    commitment: "confirmed",
+                }
+            );
     
             const program = new Program(idl, anchorProvider);
     
@@ -90,6 +93,7 @@ export const NFTDisplay = ({ mintData }) => {
                 database: new PublicKey('5ahNFeoYAS4HayZWK6osa6ZiocNojNJcfzgUJASicRbf'),
             };
     
+            // Create transaction instructions
             const transaction = await program.methods
                 .createAsset(
                     nftName,
@@ -99,12 +103,28 @@ export const NFTDisplay = ({ mintData }) => {
                     username
                 )
                 .accounts(accounts)
-                .signers([asset])
-                .rpc(); 
+                .instruction(); // Generate instruction instead of RPC call
     
-            // return transaction;
-
-            console.log("Transaction", transaction)
+            const tx = new Transaction().add(transaction);
+    
+            // Fetch recent blockhash and assign the feePayer
+            const { blockhash } = await connection.getLatestBlockhash();
+            tx.recentBlockhash = blockhash;
+            tx.feePayer = new PublicKey(walletAddress);
+    
+            // Part 1: Sign with the wallet
+            const signedTx = await anchorProvider.wallet.signTransaction(tx);
+    
+            // Part 2: Sign with the asset keypair
+            signedTx.partialSign(asset);
+    
+            // Send the transaction
+            const signature = await connection.sendRawTransaction(signedTx.serialize(), {
+                skipPreflight: false,
+                preflightCommitment: "confirmed",
+            });
+    
+            console.log("Transaction signature:", signature);
     
         } catch (error) {
             console.error("Error during minting process:", error);
