@@ -81,17 +81,7 @@ export const NFTDisplay = ({ mintData }) => {
                 connection,
                 {
                     publicKey: new PublicKey(walletAddress),
-                    signTransaction: async (transaction) => {
-                        // Convert transaction to base58 format
-                        const serializedTx = transaction.serialize({
-                            requireAllSignatures: false,
-                            verifySignatures: false,
-                        });
-                        const base58Tx = encode(serializedTx);
-    
-                        // Use DSCVR's signTransaction method
-                        return await signTransaction(base58Tx);
-                    }
+                    signTransaction,
                 },
                 {
                     commitment: "confirmed",
@@ -124,25 +114,25 @@ export const NFTDisplay = ({ mintData }) => {
             const tx = new Transaction().add(transaction);
     
             // Fetch recent blockhash and assign the feePayer
-            const { blockhash } = await connection.getLatestBlockhash();
-            tx.recentBlockhash = blockhash;
-            tx.feePayer = new PublicKey(walletAddress);
+            // const { blockhash } = await connection.getLatestBlockhash();
+            // tx.recentBlockhash = blockhash;
+            // tx.feePayer = new PublicKey(walletAddress);
     
-            // Sign the transaction using DSCVR's signTransaction method
-            const signedTx = await anchorProvider.wallet.signTransaction(tx);
+            // // Sign the transaction using DSCVR's signTransaction method
+            // const signedTx = await anchorProvider.wallet.signTransaction(tx);
     
-            // Sign with the asset keypair
-            signedTx.partialSign(asset);
+            // // Sign with the asset keypair
+            // signedTx.partialSign(asset);
     
-            // Serialize and send the transaction
-            const serializedTx = signedTx.serialize({
-                requireAllSignatures: false,
-                verifySignatures: false,
-            });
-            const base58Tx = encode(serializedTx);
+            // // Serialize and send the transaction
+            // const serializedTx = signedTx.serialize({
+            //     requireAllSignatures: false,
+            //     verifySignatures: false,
+            // });
+            // const base58Tx = encode(serializedTx);
     
             // Send the transaction using DSCVR's signTransaction
-            const res = await signTransaction(base58Tx);
+            const res = await signTransaction(tx);
     
             console.log("Transaction signature:", res);
     
