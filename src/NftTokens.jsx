@@ -71,7 +71,6 @@ export const NFTDisplay = ({ mintData }) => {
 
             // Generate a new keypair for the asset
             const asset = Keypair.generate();
-            asset.publicKey = new PublicKey(walletAddress);
             const assetPublicKey = asset.publicKey;
 
             console.log("Generated Asset Public Key:", assetPublicKey.toBase58());
