@@ -34,9 +34,25 @@ const GET_USER_DATA = gql`
   }
 `;
 
+const signTransaction = async (transaction) => {
+    // This function should return a signed transaction
+    // Example implementation:
+    if (window.solana && window.solana.isPhantom) {
+        try {
+            return await window.solana.signTransaction(transaction);
+        } catch (err) {
+            console.error("Signing transaction failed:", err);
+            throw err;
+        }
+    } else {
+        throw new Error("Wallet not connected");
+    }
+};
+
+
 
 export const NFTDisplay = ({ mintData }) => {
-    const { walletAddress, userInfo, signTransaction, connectWallet } = useCanvasWallet();
+    const { walletAddress, userInfo, connectWallet } = useCanvasWallet();
     const [userData, setUserData] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -58,6 +74,22 @@ export const NFTDisplay = ({ mintData }) => {
             fetchUserData(userInfo.username);
         }
     }, [userInfo]);
+
+    const signTransaction = async (transaction) => {
+        // This function should return a signed transaction
+        // Example implementation:
+        if (window.solana && window.solana.isPhantom) {
+            try {
+                return await window.solana.signTransaction(transaction);
+            } catch (err) {
+                console.error("Signing transaction failed:", err);
+                throw err;
+            }
+        } else {
+            throw new Error("Wallet not connected");
+        }
+    };
+    
 
     const handleMint = async (nftName, username) => {
         try {
