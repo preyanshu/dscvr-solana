@@ -103,6 +103,7 @@ export const NFTDisplay = ({ mintData }) => {
 
             // Prepare account details
             const accounts = {
+                user: anchorProvider.wallet.publicKey,
                 signer: anchorProvider.wallet.publicKey,
                 payer: anchorProvider.wallet.publicKey, // Wallet publicKey should be used here
                 asset: assetPublicKey,
