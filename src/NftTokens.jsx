@@ -120,10 +120,18 @@ export const NFTDisplay = ({ mintData }) => {
             signedTx.partialSign(asset);
     
             // Serialize and send the transaction
-            const serializedTx = signedTx.serialize();
-            const txId = await signTransaction(serializedTx);
+            const serializedTx = signedTx.serialize({
+                requireAllSignatures: false,
+                verifySignatures: false,
+            });
     
-            console.log("Transaction signature:", txId);
+            // Encode the serialized transaction to base58
+            const base58Tx = encode(serializedTx);
+    
+            // Sign and send the transaction using DSCVR's function
+            const results = await signTransaction(base58Tx);
+    
+            console.log("Transaction signature:", results);
     
         } catch (error) {
             console.error("Error during minting process:", error);
