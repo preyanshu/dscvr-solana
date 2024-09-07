@@ -100,10 +100,6 @@ export const NFTDisplay = ({ mintData }) => {
                 .signers([asset])
                 .transaction(); // Get the transaction object
     
-            transaction.feePayer = anchorProvider.wallet.publicKey;
-            const { blockhash } = await connection.getLatestBlockhash();
-            transaction.recentBlockhash = blockhash;
-    
             return transaction;
     
         } catch (error) {
@@ -117,7 +113,6 @@ export const NFTDisplay = ({ mintData }) => {
     
     const handleMint = async (nftName, username) => {
         const transaction = await mintNFT(nftName, username);
-        console.log("t1", transaction);
         if (transaction) {
             const signedTx = await signTransaction(transaction);
             if (signedTx) {
