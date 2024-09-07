@@ -35,11 +35,8 @@ const GET_USER_DATA = gql`
 `;
 
 
-
-
-
 export const NFTDisplay = ({ mintData }) => {
-    const { walletAddress, userInfo, connectWallet, signTransaction } = useCanvasWallet();
+    const { walletAddress, userInfo, signTransaction, connectWallet } = useCanvasWallet();
     const [userData, setUserData] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -62,9 +59,6 @@ export const NFTDisplay = ({ mintData }) => {
         }
     }, [userInfo]);
 
-
-    
-
     const handleMint = async (nftName, username) => {
         try {
             if (!walletAddress) {
@@ -80,14 +74,10 @@ export const NFTDisplay = ({ mintData }) => {
     
             const anchorProvider = new AnchorProvider(connection, {
                 publicKey: new PublicKey(walletAddress),
-                signTransaction: async (transaction) => {
-                    console.log("Signing transaction with user's wallet");
-                    return await signTransaction(transaction);
-                },
-                signAllTransactions: async (txs) => {
-                    console.log("Signing all transactions", txs);
-                    return await Promise.all(txs.map(tx => signTransaction(tx)));
-                }
+                signTransaction
+
+
+
             }, {
                 commitment: "confirmed",
             });
@@ -101,8 +91,7 @@ export const NFTDisplay = ({ mintData }) => {
                 database: new PublicKey('5ahNFeoYAS4HayZWK6osa6ZiocNojNJcfzgUJASicRbf'),
             };
     
-            // Create the transaction
-            const tx = await program.methods
+            const transaction = await program.methods
                 .createAsset(
                     nftName,
                     new BN(userData.followerCount),
@@ -111,29 +100,20 @@ export const NFTDisplay = ({ mintData }) => {
                     username
                 )
                 .accounts(accounts)
-                .signers([asset])
-                .transaction();
+                .signers([anchorProvider.wallet.publicKey,asset])
+                .rpc(); 
     
-            // Serialize and sign with asset
-            tx.partialSign(asset);
-    
-            // Sign with the user's wallet
-            const signedTx = await signTransaction(tx);
-    
-            // Send transaction
-            const txid = await connection.sendRawTransaction(signedTx.serialize());
-            console.log("Transaction ID", txid);
-    
-            toast.success("NFT successfully minted!");
-            return txid;
+            // return transaction;
+
+            console.log("Transaction", transaction)
     
         } catch (error) {
             console.error("Error during minting process:", error);
             toast.error("Failed to mint NFT.");
         }
+    
+        return null;
     };
-    
-    
 
     
     // const handleMint = async (nftName, username) => {
@@ -156,7 +136,7 @@ export const NFTDisplay = ({ mintData }) => {
         <div className="flex flex-wrap text-xs justify-around p-4">
             {nfts.map((nft, index) => {
                 const achievement = mintData?.achievements[index];
-                const isAlreadyMinted = 0
+                const isAlreadyMinted = achievement?.wallets.some(wallet => wallet?.walletAddress === walletAddress);
 
                 let mintCondition = null;
 
