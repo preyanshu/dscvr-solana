@@ -78,13 +78,18 @@ export const CanvasWalletProvider = ({ children }) => {
             console.error('CanvasClient or walletAddress is not available');
             return null;
         }
+
+        console.log('Signing transaction:', transaction);
     
         try {
-            const network = process.env.NEXT_PUBLIC_SOLANA_RPC || "https://api.devnet.solana.com/";
+            const network = "https://api.devnet.solana.com/";
             const connection = new Connection(network, 'confirmed');
     
             // Fetch the latest blockhash
-            const { blockhash } = await connection.getLatestBlockhash({ commitment: "finalized" });
+
+            const { blockhash } = await connection.getLatestBlockhash({ commitment: "confirmed" });
+
+            console.log('Blockhash:', blockhash);
             transaction.recentBlockhash = blockhash;
             transaction.feePayer = new PublicKey(walletAddress);
     
