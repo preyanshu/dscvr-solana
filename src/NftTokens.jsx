@@ -34,25 +34,12 @@ const GET_USER_DATA = gql`
   }
 `;
 
-const signTransaction = async (transaction) => {
-    // This function should return a signed transaction
-    // Example implementation:
-    if (window.solana && window.solana.isPhantom) {
-        try {
-            return await window.solana.signTransaction(transaction);
-        } catch (err) {
-            console.error("Signing transaction failed:", err);
-            throw err;
-        }
-    } else {
-        throw new Error("Wallet not connected");
-    }
-};
+
 
 
 
 export const NFTDisplay = ({ mintData }) => {
-    const { walletAddress, userInfo, connectWallet } = useCanvasWallet();
+    const { walletAddress, userInfo, connectWallet, signTransaction } = useCanvasWallet();
     const [userData, setUserData] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -75,20 +62,7 @@ export const NFTDisplay = ({ mintData }) => {
         }
     }, [userInfo]);
 
-    const signTransaction = async (transaction) => {
-        // This function should return a signed transaction
-        // Example implementation:
-        if (window.solana && window.solana.isPhantom) {
-            try {
-                return await window.solana.signTransaction(transaction);
-            } catch (err) {
-                console.error("Signing transaction failed:", err);
-                throw err;
-            }
-        } else {
-            throw new Error("Wallet not connected");
-        }
-    };
+
     
 
     const handleMint = async (nftName, username) => {
@@ -107,12 +81,12 @@ export const NFTDisplay = ({ mintData }) => {
             const anchorProvider = new AnchorProvider(connection, {
                 publicKey: new PublicKey(walletAddress),
                 signTransaction: async (transaction) => {
-                    print("Signing transaction with user's wallet");
+                    console.log("Signing transaction with user's wallet");
                     return await signTransaction(transaction);
                 },
                 signAllTransactions: async (txs) => {
-                    print("Signing all transactions", txs);
-                    return await Promise.all(txs.map(signTransaction));
+                    console.log("Signing all transactions", txs);
+                    return await Promise.all(txs.map(tx => signTransaction(tx)));
                 }
             }, {
                 commitment: "confirmed",
@@ -126,8 +100,6 @@ export const NFTDisplay = ({ mintData }) => {
                 asset: assetPublicKey,
                 database: new PublicKey('5ahNFeoYAS4HayZWK6osa6ZiocNojNJcfzgUJASicRbf'),
             };
-    
-            console.log("Signers:", [anchorProvider.wallet.publicKey.toString(), asset.publicKey.toString()]);
     
             // Create the transaction
             const tx = await program.methods
@@ -143,9 +115,12 @@ export const NFTDisplay = ({ mintData }) => {
                 .transaction();
     
             // Serialize and sign with asset
+            tx.partialSign(asset);
+    
+            // Sign with the user's wallet
             const signedTx = await anchorProvider.signTransaction(tx);
     
-            // Send transaction with asset as the first signer
+            // Send transaction
             const txid = await connection.sendRawTransaction(signedTx.serialize());
             console.log("Transaction ID", txid);
     
@@ -157,6 +132,7 @@ export const NFTDisplay = ({ mintData }) => {
             toast.error("Failed to mint NFT.");
         }
     };
+    
     
 
     

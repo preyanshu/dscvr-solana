@@ -78,45 +78,47 @@ export const CanvasWalletProvider = ({ children }) => {
             console.error('CanvasClient or walletAddress is not available');
             return null;
         }
-
+    
         try {
             const network = process.env.NEXT_PUBLIC_SOLANA_RPC || "https://api.devnet.solana.com/";
             const connection = new Connection(network, 'confirmed');
-
+    
             // Fetch the latest blockhash
             const { blockhash } = await connection.getLatestBlockhash({ commitment: "finalized" });
             transaction.recentBlockhash = blockhash;
             transaction.feePayer = new PublicKey(walletAddress);
-
+    
             // Serialize the transaction
             const serializedTx = transaction.serialize({
                 requireAllSignatures: false,
                 verifySignatures: false,
             });
-
+    
             // Encode serialized transaction to base58 if needed
             const base58Tx = encode(serializedTx);
-           
+    
+            // Sign and send transaction
             const results = await canvasClient.signAndSendTransaction({
-                    unsignedTx: base58Tx,
-                    awaitCommitment: "confirmed",
-                    chainId: SOLANA_MAINNET_CHAIN_ID,
-                });
-
-            console.log(results);
+                unsignedTx: base58Tx,
+                awaitCommitment: "confirmed",
+                chainId: SOLANA_MAINNET_CHAIN_ID,
+            });
+    
+            console.log('Transaction result:', results);
+    
             if (results?.untrusted?.success) {
                 console.log('Transaction signed:', results.untrusted.signedTx);
                 return results.untrusted.signedTx;
             } else {
-                console.error('Failed to sign transaction');
+                console.error('Failed to sign transaction:', results?.untrusted?.error || 'Unknown error');
             }
         } catch (error) {
             console.error('Error signing transaction:', error);
         }
-
+    
         return null;
     };
-
+    
     const value = {
         connectWallet,
         walletAddress,
