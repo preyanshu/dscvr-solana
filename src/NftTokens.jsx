@@ -63,7 +63,6 @@ export const NFTDisplay = ({ mintData }) => {
 
     const handleMint = async (nftName, username) => {
         try {
-            // Check if wallet is connected
             if (!walletAddress) {
                 await connectWallet();
                 console.error("Wallet not connected");
@@ -71,27 +70,23 @@ export const NFTDisplay = ({ mintData }) => {
                 return null;
             }
     
-            // Generate a new asset Keypair
             const asset = Keypair.generate();
             const assetPublicKey = asset.publicKey;
             const connection = new Connection(clusterApiUrl("devnet"), "confirmed");
     
-            // Initialize AnchorProvider
             const anchorProvider = new AnchorProvider(
                 connection,
                 {
                     publicKey: new PublicKey(walletAddress),
-                    signTransaction,
+                    signTransaction: signTransaction // Use the provided signTransaction function
                 },
                 {
                     commitment: "confirmed",
                 }
             );
     
-            // Initialize the program
             const program = new Program(idl, anchorProvider);
     
-            // Define accounts for the transaction
             const accounts = {
                 signer: anchorProvider.wallet.publicKey,
                 payer: anchorProvider.wallet.publicKey,
@@ -114,27 +109,21 @@ export const NFTDisplay = ({ mintData }) => {
             const tx = new Transaction().add(transaction);
     
             // Fetch recent blockhash and assign the feePayer
-            // const { blockhash } = await connection.getLatestBlockhash();
-            // tx.recentBlockhash = blockhash;
-            // tx.feePayer = new PublicKey(walletAddress);
+            const { blockhash } = await connection.getLatestBlockhash();
+            tx.recentBlockhash = blockhash;
+            tx.feePayer = new PublicKey(walletAddress);
     
-            // // Sign the transaction using DSCVR's signTransaction method
-            // const signedTx = await anchorProvider.wallet.signTransaction(tx);
+            // Sign the transaction with the wallet
+            const signedTx = await anchorProvider.wallet.signTransaction(tx);
     
-            // // Sign with the asset keypair
-            // signedTx.partialSign(asset);
+            // Sign with the asset keypair
+            signedTx.partialSign(asset);
     
-            // // Serialize and send the transaction
-            // const serializedTx = signedTx.serialize({
-            //     requireAllSignatures: false,
-            //     verifySignatures: false,
-            // });
-            // const base58Tx = encode(serializedTx);
+            // Serialize and send the transaction
+            const serializedTx = signedTx.serialize();
+            const txId = await signTransaction(serializedTx);
     
-            // Send the transaction using DSCVR's signTransaction
-            const res = await signTransaction(tx);
-    
-            console.log("Transaction signature:", res);
+            console.log("Transaction signature:", txId);
     
         } catch (error) {
             console.error("Error during minting process:", error);
@@ -142,24 +131,8 @@ export const NFTDisplay = ({ mintData }) => {
         }
     
         return null;
-    };    
-
-    
-    // const handleMint = async (nftName, username) => {
-    //     const transaction = await mintNFT(nftName, username);
-    //     if (transaction) {
-    //         const signedTx = await signTransaction(transaction);
-    //         if (signedTx) {
-    //             console.log("NFT minted successfully!");
-    //             toast.success("NFT successfully minted!");
-    //         } else {
-    //             toast.error("Failed to sign and send the transaction.");
-    //         }
-    //     }
-    // };
-    
-
-
+    };
+ 
 
     return (
         <div className="flex flex-wrap text-xs justify-around p-4">
