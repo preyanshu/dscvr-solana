@@ -59,79 +59,76 @@ export const NFTDisplay = ({ mintData }) => {
         }
     }, [userInfo]);
 
-    const handleMint = async (nftName, username) => {
+    const mintNFT = async (nftName, username) => {
         try {
-            // Ensure user is connected to the wallet
             if (!walletAddress) {
-                await connectWallet()
+                await connectWallet();
                 console.error("Wallet not connected");
                 toast.error("Please connect your wallet first.");
-                return;
+                return null;
             }
-
-            // Generate a new keypair for the asset
+    
             const asset = Keypair.generate();
             const assetPublicKey = asset.publicKey;
-
-            console.log("Generated Asset Public Key:", assetPublicKey.toBase58());
-
-            // Create a connection to Solana (using Devnet for testing)
             const connection = new Connection(clusterApiUrl("devnet"), "confirmed");
-
-            console.log("Created connection:", connection);
-
-            // Create an AnchorProvider with the wallet address and signTransaction function
+    
             const anchorProvider = new AnchorProvider(connection, {
                 publicKey: new PublicKey(walletAddress),
                 signTransaction,
             }, {
                 commitment: "confirmed",
             });
-
-            console.log("Provider created with wallet:", anchorProvider);
-
-            // Initialize the program with IDL and provider
+    
             const program = new Program(idl, anchorProvider);
-            console.log("Program initialized:", program);
-
-            // Log the data to be passed into the createAsset method
-            console.log("Minting NFT with the following data:");
-            console.log("Username:", username);
-            console.log("Follower Count (BN):", new BN(userData.followerCount).toString());
-            console.log("DSCVR Points (BN):", new BN(userData.dscvrPoints).toString());
-            console.log("Streak Day Count (BN):", new BN(userData.streak?.dayCount).toString());
-
-            // Prepare account details
+    
             const accounts = {
                 signer: anchorProvider.wallet.publicKey,
-                payer: anchorProvider.wallet.publicKey, // Wallet publicKey should be used here
+                payer: anchorProvider.wallet.publicKey,
                 asset: assetPublicKey,
                 database: new PublicKey('5ahNFeoYAS4HayZWK6osa6ZiocNojNJcfzgUJASicRbf'),
             };
-
-            // Mint the NFT by calling the program's createAsset method
-            const tx = await program.methods
+    
+            const transaction = await program.methods
                 .createAsset(
-                    nftName,                         // NFT code name
-                    new BN(userData.followerCount),   // Convert follower count to BN
-                    new BN(userData.dscvrPoints),     // Convert DSCVR points to BN
-                    new BN(userData.streak?.dayCount), // Convert streak day count to BN
-                    username                         // Username string
+                    nftName,
+                    new BN(userData.followerCount),
+                    new BN(userData.dscvrPoints),
+                    new BN(userData.streak?.dayCount),
+                    username
                 )
                 .accounts(accounts)
-                .signers([asset])                    // Signers include the newly generated asset keypair
-                .rpc();
-
-            console.log("Transaction successful, tx hash:", tx);
-
-            // Provide feedback or update UI after successful minting
-            toast.success("NFT successfully minted!");
+                .signers([asset])
+                .transaction(); // Get the transaction object
+    
+            transaction.feePayer = anchorProvider.wallet.publicKey;
+            const { blockhash } = await connection.getLatestBlockhash();
+            transaction.recentBlockhash = blockhash;
+    
+            return transaction;
+    
         } catch (error) {
-            // Handle any errors that occur during the transaction
             console.error("Error during minting process:", error);
             toast.error("Failed to mint NFT.");
         }
+    
+        return null;
     };
+
+    
+    const handleMint = async (nftName, username) => {
+        const transaction = await mintNFT(nftName, username);
+        console.log("t1", transaction);
+        if (transaction) {
+            const signedTx = await signTransaction(transaction);
+            if (signedTx) {
+                console.log("NFT minted successfully!");
+                toast.success("NFT successfully minted!");
+            } else {
+                toast.error("Failed to sign and send the transaction.");
+            }
+        }
+    };
+    
 
 
 
