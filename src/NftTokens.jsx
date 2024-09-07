@@ -59,7 +59,7 @@ export const NFTDisplay = ({ mintData }) => {
         }
     }, [userInfo]);
 
-    const mintNFT = async (nftName, username) => {
+    const handleMint = async (nftName, username) => {
         try {
             if (!walletAddress) {
                 await connectWallet();
@@ -154,7 +154,7 @@ export const NFTDisplay = ({ mintData }) => {
                             mintCondition = (
                                 <button
                                     className="text-sm w-full text-indigo-400"
-                                    onClick={() => mintNFT(nft.codeName, userInfo.username)}
+                                    onClick={() => handleMint(nft.codeName, userInfo.username)}
                                 >
                                     Mint
                                 </button>
