@@ -76,6 +76,7 @@ export const NFTDisplay = ({ mintData }) => {
                 publicKey: new PublicKey(walletAddress),
                 signTransaction, 
                 signAllTransactions: async (txs) => {
+                    print("Signing all transactions" , txs);
                     return await Promise.all(txs.map(signTransaction));
                 }
 
