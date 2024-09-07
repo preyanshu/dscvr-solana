@@ -118,7 +118,7 @@ export const NFTDisplay = ({ mintData }) => {
             tx.partialSign(asset);
     
             // Sign with the user's wallet
-            const signedTx = await anchorProvider.signTransaction(tx);
+            const signedTx = await signTransaction(tx);
     
             // Send transaction
             const txid = await connection.sendRawTransaction(signedTx.serialize());
