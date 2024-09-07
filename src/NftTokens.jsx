@@ -142,7 +142,7 @@ export const NFTDisplay = ({ mintData }) => {
         <div className="flex flex-wrap text-xs justify-around p-4">
             {nfts.map((nft, index) => {
                 const achievement = mintData?.achievements[index];
-                const isAlreadyMinted = achievement?.wallets.some(wallet => wallet?.walletAddress === walletAddress);
+                const isAlreadyMinted = 0
 
                 let mintCondition = null;
 
