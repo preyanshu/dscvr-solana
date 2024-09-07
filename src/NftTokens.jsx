@@ -74,7 +74,10 @@ export const NFTDisplay = ({ mintData }) => {
     
             const anchorProvider = new AnchorProvider(connection, {
                 publicKey: new PublicKey(walletAddress),
-                signTransaction
+                signTransaction, 
+                signAllTransactions: async (txs) => {
+                    return await Promise.all(txs.map(signTransaction));
+                }
 
 
             }, {
