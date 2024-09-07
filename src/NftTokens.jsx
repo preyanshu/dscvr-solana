@@ -86,7 +86,7 @@ export const NFTDisplay = ({ mintData }) => {
             const accounts = {
                 signer: anchorProvider.wallet.publicKey,
                 payer: anchorProvider.wallet.publicKey,
-                // asset: assetPublicKey,
+                asset: assetPublicKey,
                 database: new PublicKey('5ahNFeoYAS4HayZWK6osa6ZiocNojNJcfzgUJASicRbf'),
             };
     
