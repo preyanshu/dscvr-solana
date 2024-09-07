@@ -89,6 +89,7 @@ export const CanvasWalletProvider = ({ children }) => {
             transaction.feePayer = new PublicKey(walletAddress);
 
             // Serialize the transaction
+            console.log(transaction);
             const serializedTx = transaction.serialize({
                 requireAllSignatures: false,
                 verifySignatures: false,

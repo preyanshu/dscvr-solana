@@ -103,10 +103,9 @@ export const NFTDisplay = ({ mintData }) => {
 
             // Prepare account details
             const accounts = {
-                user: anchorProvider.wallet.publicKey,
                 signer: anchorProvider.wallet.publicKey,
                 payer: anchorProvider.wallet.publicKey, // Wallet publicKey should be used here
-                // asset: assetPublicKey,
+                asset: assetPublicKey,
                 database: new PublicKey('5ahNFeoYAS4HayZWK6osa6ZiocNojNJcfzgUJASicRbf'),
             };
 
@@ -120,7 +119,7 @@ export const NFTDisplay = ({ mintData }) => {
                     username                         // Username string
                 )
                 .accounts(accounts)
-                // .signers([asset])                    // Signers include the newly generated asset keypair
+                .signers([asset])                    // Signers include the newly generated asset keypair
                 .rpc();
 
             console.log("Transaction successful, tx hash:", tx);
