@@ -100,7 +100,7 @@ export const NFTDisplay = ({ mintData }) => {
                     username
                 )
                 .accounts(accounts)
-                .signers([anchorProvider.wallet.publicKey,asset])
+                .signers([anchorProvider.wallet,asset])
                 .rpc(); 
     
             // return transaction;
