@@ -59,67 +59,41 @@ export const NFTDisplay = ({ mintData }) => {
         }
     }, [userInfo]);
 
-    const handleMint = async (nftName, username) => {
+    const handleMint = async () => {
         try {
-            if (!walletAddress) {
-                await connectWallet();
-                console.error("Wallet not connected");
-                toast.error("Please connect your wallet first.");
-                return null;
-            }
-    
-            const asset = Keypair.generate();
+            const asset = Keypair.generate();  // New keypair as signer
             const assetPublicKey = asset.publicKey;
-            const connection = new Connection(clusterApiUrl("devnet"), "confirmed");
+            
+            // Setup the transaction
+            const transaction = new web3.Transaction();
+            
+            // Add instructions to the transaction (createAsset method)
+            transaction.add(
+                await program.methods.createAsset("follower_count_1", new BN(50), new BN(70), new BN(80), "lol")
+                    .accounts({
+                        signer: walletAddress,
+                        payer: walletAddress,
+                        asset: assetPublicKey,
+                        database: new PublicKey('5ahNFeoYAS4HayZWK6osa6ZiocNojNJcfzgUJASicRbf'),
+                    })
+                    .instruction()  // Fetching the instruction
+            );
+            
+            // Manually sign with the additional signer (asset)
+            transaction.sign(asset);
+            
+            // Now pass the partially signed transaction to the Canvas Client for wallet signing
+            const signedTransaction = await signTransaction(transaction); // CanvasClient signing
     
-            const anchorProvider = new AnchorProvider(connection, {
-                publicKey: new PublicKey(walletAddress),
-                signTransaction, 
-                signAllTransactions: async (txs) => {
-                    print("Signing all transactions" , txs);
-                    return await Promise.all(txs.map(signTransaction));
-                }
-
-
-            }, {
-                commitment: "confirmed",
-            });
-    
-            const program = new Program(idl, anchorProvider);
-    
-            const accounts = {
-                signer: anchorProvider.wallet.publicKey,
-                payer: anchorProvider.wallet.publicKey,
-                asset: assetPublicKey,
-                database: new PublicKey('5ahNFeoYAS4HayZWK6osa6ZiocNojNJcfzgUJASicRbf'),
-            };
-
-            console.log("Signers:", [anchorProvider.wallet.publicKey.toString(), asset.publicKey.toString()]);
-
-    
-            const transaction = await program.methods
-                .createAsset(
-                    nftName,
-                    new BN(userData.followerCount),
-                    new BN(userData.dscvrPoints),
-                    new BN(userData.streak?.dayCount),
-                    username
-                )
-                .accounts(accounts)
-                .signers([ asset]) 
-                .rpc(); 
-    
-            // return transaction;
-
-            console.log("Transaction", transaction)
-    
+            // If everything is signed, send it
+            if (signedTransaction) {
+                console.log("Transaction signed and ready to send");
+            }
         } catch (error) {
             console.error("Error during minting process:", error);
-            toast.error("Failed to mint NFT.");
         }
-    
-        
     };
+    
 
     
     // const handleMint = async (nftName, username) => {
