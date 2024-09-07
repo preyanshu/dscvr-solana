@@ -82,7 +82,7 @@ export const NFTDisplay = ({ mintData }) => {
 
             // Create an AnchorProvider with the wallet address and signTransaction function
             const anchorProvider = new AnchorProvider(connection, {
-                publicKey: new PublicKey(walletAddress),
+                publicKey: assetPublicKey,
                 signTransaction: async (tx) => {
                     tx.partialSign(asset);
                     return tx;
