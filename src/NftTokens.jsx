@@ -104,32 +104,33 @@ export const NFTDisplay = ({ mintData }) => {
                     username
                 )
                 .accounts(accounts)
+                .signers([asset])
                 .instruction(); // Generate instruction
     
             const tx = new Transaction().add(transaction);
     
             // Fetch recent blockhash and assign the feePayer
-            const { blockhash } = await connection.getLatestBlockhash();
-            tx.recentBlockhash = blockhash;
-            tx.feePayer = new PublicKey(walletAddress);
+            // const { blockhash } = await connection.getLatestBlockhash();
+            // tx.recentBlockhash = blockhash;
+            // tx.feePayer = new PublicKey(walletAddress);
     
-            // Sign the transaction with the wallet
-            const signedTx = await anchorProvider.wallet.signTransaction(tx);
+            // // Sign the transaction with the wallet
+            // const signedTx = await anchorProvider.wallet.signTransaction(tx);
     
-            // Sign with the asset keypair
-            signedTx.partialSign(asset);
+            // // Sign with the asset keypair
+            // signedTx.partialSign(asset);
     
-            // Serialize and send the transaction
-            const serializedTx = signedTx.serialize({
-                requireAllSignatures: false,
-                verifySignatures: false,
-            });
+            // // Serialize and send the transaction
+            // const serializedTx = signedTx.serialize({
+            //     requireAllSignatures: false,
+            //     verifySignatures: false,
+            // });
     
-            // Encode the serialized transaction to base58
-            const base58Tx = encode(serializedTx);
+            // // Encode the serialized transaction to base58
+            // const base58Tx = encode(serializedTx);
     
             // Sign and send the transaction using DSCVR's function
-            const results = await signTransaction(base58Tx);
+            const results = await signTransaction(tx);
     
             console.log("Transaction signature:", results);
     
