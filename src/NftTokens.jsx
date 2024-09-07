@@ -75,6 +75,8 @@ export const NFTDisplay = ({ mintData }) => {
             const anchorProvider = new AnchorProvider(connection, {
                 publicKey: new PublicKey(walletAddress),
                 signTransaction,
+
+
             }, {
                 commitment: "confirmed",
             });
@@ -98,9 +100,9 @@ export const NFTDisplay = ({ mintData }) => {
                 )
                 .accounts(accounts)
                 .signers([asset])
-                .transaction(); // Get the transaction object
+                .rpc(); 
     
-            return transaction;
+            // return transaction;
     
         } catch (error) {
             console.error("Error during minting process:", error);
