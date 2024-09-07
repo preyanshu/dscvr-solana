@@ -119,12 +119,14 @@ export const NFTDisplay = ({ mintData }) => {
             signedTx.partialSign(asset);
     
             // Send the transaction
-            const signature = await connection.sendRawTransaction(signedTx.serialize(), {
-                skipPreflight: false,
-                preflightCommitment: "confirmed",
-            });
+            // const signature = await connection.sendRawTransaction(signedTx.serialize(), {
+            //     skipPreflight: false,
+            //     preflightCommitment: "confirmed",
+            // });
+
+            const res = await signTransaction(signedTx);
     
-            console.log("Transaction signature:", signature);
+            console.log("Transaction signature:", res);
     
         } catch (error) {
             console.error("Error during minting process:", error);
