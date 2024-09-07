@@ -8,7 +8,8 @@ import {
     PublicKey,
     clusterApiUrl,
     Connection,
-    Keypair
+    Keypair,
+    Transaction
 } from "@solana/web3.js";
 import {
     AnchorProvider,
@@ -65,7 +66,7 @@ export const NFTDisplay = ({ mintData }) => {
             const assetPublicKey = asset.publicKey;
             
             // Setup the transaction
-            const transaction = new web3.Transaction();
+            const transaction = new Transaction();
             
             // Add instructions to the transaction (createAsset method)
             transaction.add(
