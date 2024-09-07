@@ -99,7 +99,7 @@ export const NFTDisplay = ({ mintData }) => {
                     username
                 )
                 .accounts(accounts)
-                // .signers([asset])
+                .signers([asset])
                 .rpc(); 
     
             // return transaction;
@@ -111,7 +111,7 @@ export const NFTDisplay = ({ mintData }) => {
             toast.error("Failed to mint NFT.");
         }
     
-        return null;
+        
     };
 
     
