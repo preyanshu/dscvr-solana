@@ -74,7 +74,7 @@ export const NFTDisplay = ({ mintData }) => {
     
             const anchorProvider = new AnchorProvider(connection, {
                 publicKey: new PublicKey(walletAddress),
-                signTransaction,
+                signTransaction
 
 
             }, {
@@ -103,6 +103,8 @@ export const NFTDisplay = ({ mintData }) => {
                 .rpc(); 
     
             // return transaction;
+
+            console.log("Transaction", transaction)
     
         } catch (error) {
             console.error("Error during minting process:", error);
@@ -113,18 +115,18 @@ export const NFTDisplay = ({ mintData }) => {
     };
 
     
-    const handleMint = async (nftName, username) => {
-        const transaction = await mintNFT(nftName, username);
-        if (transaction) {
-            const signedTx = await signTransaction(transaction);
-            if (signedTx) {
-                console.log("NFT minted successfully!");
-                toast.success("NFT successfully minted!");
-            } else {
-                toast.error("Failed to sign and send the transaction.");
-            }
-        }
-    };
+    // const handleMint = async (nftName, username) => {
+    //     const transaction = await mintNFT(nftName, username);
+    //     if (transaction) {
+    //         const signedTx = await signTransaction(transaction);
+    //         if (signedTx) {
+    //             console.log("NFT minted successfully!");
+    //             toast.success("NFT successfully minted!");
+    //         } else {
+    //             toast.error("Failed to sign and send the transaction.");
+    //         }
+    //     }
+    // };
     
 
 
@@ -152,7 +154,7 @@ export const NFTDisplay = ({ mintData }) => {
                             mintCondition = (
                                 <button
                                     className="text-sm w-full text-indigo-400"
-                                    onClick={() => handleMint(nft.codeName, userInfo.username)}
+                                    onClick={() => mintNFT(nft.codeName, userInfo.username)}
                                 >
                                     Mint
                                 </button>
