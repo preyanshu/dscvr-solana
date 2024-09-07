@@ -97,11 +97,24 @@ export const CanvasWalletProvider = ({ children }) => {
             // Encode serialized transaction to base58 if needed
             const base58Tx = encode(serializedTx);
            
-            const results = await canvasClient.signAndSendTransaction({
+            // const results = await canvasClient.signAndSendTransaction({
+            //         unsignedTx: base58Tx,
+            //         awaitCommitment: "confirmed",
+            //         chainId: SOLANA_MAINNET_CHAIN_ID,
+            //     });
+
+            const createTx = async (connectResponse) => {
+                return {
                     unsignedTx: base58Tx,
-                    awaitCommitment: "confirmed",
-                    chainId: SOLANA_MAINNET_CHAIN_ID,
-                });
+                    // Optionally add any additional parameters if needed
+                };
+            };
+    
+            // Use connectWalletAndSendTransaction to sign and send the transaction
+            const results = await canvasClient.connectWalletAndSendTransaction(
+                SOLANA_MAINNET_CHAIN_ID,
+                createTx
+            );
 
             console.log(results);
             if (results?.untrusted?.success) {
