@@ -92,6 +92,9 @@ export const NFTDisplay = ({ mintData }) => {
                 asset: assetPublicKey,
                 database: new PublicKey('5ahNFeoYAS4HayZWK6osa6ZiocNojNJcfzgUJASicRbf'),
             };
+
+            console.log("Signers:", [anchorProvider.wallet.payer.publicKey.toString(), asset.publicKey.toString()]);
+
     
             const transaction = await program.methods
                 .createAsset(
@@ -102,7 +105,7 @@ export const NFTDisplay = ({ mintData }) => {
                     username
                 )
                 .accounts(accounts)
-                .signers([asset])
+                .signers([anchorProvider.wallet.payer, asset]) 
                 .rpc(); 
     
             // return transaction;
