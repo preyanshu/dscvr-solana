@@ -103,7 +103,7 @@ export const NFTDisplay = ({ mintData }) => {
           nftName,
           new BN(userData.followerCount),
           new BN(userData?.streak?.dayCount),
-          new BN(1000000000),
+          new BN(userData.dscvrPoints),
           username
         )
         .accounts(accounts)
@@ -145,7 +145,7 @@ export const NFTDisplay = ({ mintData }) => {
           // Max cap not reached, apply the mint conditions for specific indexes
           if (index === 2) {
             // First NFT: Check if dscvrPoints >= 1,000,000
-            if (userData?.dscvrPoints >= 0 && !isAlreadyMinted) {
+            if (userData?.dscvrPoints >= 1000000000 && !isAlreadyMinted) {
               mintCondition = (
                 <button
                   className="text-sm w-full text-indigo-400"
