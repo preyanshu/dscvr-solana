@@ -114,6 +114,11 @@ export const CanvasWalletProvider = ({ children }) => {
     
             // Serialize the transaction
             console.log("transaction",transaction)
+            transaction.signatures = transaction.signatures.filter(sig => sig.signature);
+
+            console.log("updatedtransaction",transaction)
+
+
             const serializedTx = transaction.serialize({
                 requireAllSignatures: false,
                 verifySignatures: false,
