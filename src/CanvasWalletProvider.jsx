@@ -136,13 +136,16 @@ export const CanvasWalletProvider = ({ children }) => {
       console.log(base58Tx, "base");
 
       // Sign and send transaction
-      const results = await canvasClient.signAndSendTransaction({
-        unsignedTx: base58Tx,
-        awaitCommitment: "confirmed",
-        chainId: SOLANA_MAINNET_CHAIN_ID,
-      });
-
-      console.log("Transaction result:", results);
+      try {
+        const results = await canvasClient.signAndSendTransaction({
+            unsignedTx: base58Tx,
+            awaitCommitment: "confirmed",
+            chainId: SOLANA_MAINNET_CHAIN_ID,
+          });
+          console.log("Transaction result:", results);
+      } catch (error) {
+        console.error("Error in sendAndsSgnTransaction", error);
+      }
 
       if (results?.untrusted?.success) {
         toast.success("Transaction successfull");
