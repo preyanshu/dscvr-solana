@@ -87,7 +87,7 @@ export const CanvasWalletProvider = ({ children }) => {
     };
     
     // Example usage
-    printSignersPublicKeys(transaction);
+    // printSignersPublicKeys(transaction);
     
 
     const signTransaction = async (transaction) => {
