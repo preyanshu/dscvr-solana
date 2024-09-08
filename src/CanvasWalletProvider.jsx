@@ -101,9 +101,7 @@ export const CanvasWalletProvider = ({ children }) => {
         console.log('Signing transaction:', transaction);
         printSignersPublicKeys(transaction);
 
-        const filterSignersWithValidSignatures = () => {
-            return transaction.signatures.filter(sig => sig.signature !== null);
-        };
+        transaction.signatures.filter(sig => sig.signature !== null);
     
         try {
             const network = "https://api.devnet.solana.com/";
@@ -114,7 +112,7 @@ export const CanvasWalletProvider = ({ children }) => {
             const { blockhash } = await connection.getLatestBlockhash({ commitment: "confirmed" });
 
             console.log('Blockhash:', blockhash);
-            filterSignersWithValidSignatures()
+ 
             transaction.recentBlockhash = blockhash;
             transaction.feePayer = new PublicKey(walletAddress);
     
