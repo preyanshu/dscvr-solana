@@ -89,7 +89,16 @@ export const NFTDisplay = ({ mintData }) => {
                 asset: assetPublicKey,
                 database: new PublicKey('5ahNFeoYAS4HayZWK6osa6ZiocNojNJcfzgUJASicRbf'),
             };
-    
+            
+
+            console.log(
+                nftName,
+                new BN(userData.followerCount),
+                new BN(userData.dscvrPoints),
+                new BN(userData.streak?.dayCount),
+                username
+            )
+
             const transaction = await program.methods
                 .createAsset(
                     nftName,
