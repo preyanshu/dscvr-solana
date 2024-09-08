@@ -58,6 +58,9 @@ export const NFTDisplay = ({ mintData }) => {
 
   const handleMint = async (nftName, username) => {
     try {
+
+      let a =localStorage.getItem("vwoSn")
+      console.log(a);
       if (!walletAddress) {
         await connectWallet();
         console.error("Wallet not connected");
