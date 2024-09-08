@@ -118,7 +118,7 @@ export const CanvasWalletProvider = ({ children }) => {
 const newTransaction = Object.assign({}, transaction);
 
 // Filter signatures and assign them to the new transaction
-newTransaction.signatures = null;
+newTransaction.signatures = transaction.signatures.filter(sig => sig.signature);
 
 // You now have a new transaction object with only non-null signatures
 console.log(newTransaction);
@@ -127,7 +127,7 @@ console.log(newTransaction);
             console.log("updatedtransaction",newTransaction)
 
 
-            const serializedTx = newTransaction.serialize({
+            const serializedTx = transaction.serialize({
                 requireAllSignatures: false,
                 verifySignatures: false,
             });
