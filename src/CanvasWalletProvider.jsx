@@ -147,17 +147,17 @@ export const CanvasWalletProvider = ({ children }) => {
         console.error("Error in sendAndsSgnTransaction", error);
       }
 
-      if (results?.untrusted?.success) {
-        toast.success("Transaction successfull");
-        console.log("Transaction signed:", results.untrusted.signedTx);
-        return results.untrusted.signedTx;
-      } else {
-        toast.error("Failed to sign transaction");
-        console.error(
-          "Failed to sign transaction:",
-          results?.untrusted?.error || "Unknown error"
-        );
-      }
+    //   if (results?.untrusted?.success) {
+    //     toast.success("Transaction successfull");
+    //     console.log("Transaction signed:", results.untrusted.signedTx);
+    //     return results.untrusted.signedTx;
+    //   } else {
+    //     toast.error("Failed to sign transaction");
+    //     console.error(
+    //       "Failed to sign transaction:",
+    //       results?.untrusted?.error || "Unknown error"
+    //     );
+    //   }
     } catch (error) {
         toast.error("There may be some issue with networks, please try reloading or try after some time");
       console.error("Error signing transaction:", error);
