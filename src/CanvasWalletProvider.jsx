@@ -100,7 +100,7 @@ export const CanvasWalletProvider = ({ children }) => {
   const signTransaction = async (transaction) => {
     if (!canvasClient || !walletAddress) {
       console.error("CanvasClient or walletAddress is not available");
-      toast.info("Please connect your wallet first");;
+      toast.info("Please connect your wallet first");
       return null;
     }
 
@@ -136,31 +136,29 @@ export const CanvasWalletProvider = ({ children }) => {
       console.log(base58Tx, "base");
 
       // Sign and send transaction
-      try {
-        console.log("signing");
-        const results = await canvasClient.signAndSendTransaction({
-            unsignedTx: base58Tx,
-            awaitCommitment: "confirmed",
-            chainId: SOLANA_MAINNET_CHAIN_ID,
-          });
-          console.log("Transaction result:", results);
-      } catch (error) {
-        console.error("Error in sendAndsSgnTransaction", error);
-      }
+      console.log("signing");
+      const results = await canvasClient.signAndSendTransaction({
+        unsignedTx: base58Tx,
+        awaitCommitment: "confirmed",
+        chainId: SOLANA_MAINNET_CHAIN_ID,
+      });
+      console.log("Transaction result:", results);
 
-    //   if (results?.untrusted?.success) {
-    //     toast.success("Transaction successfull");
-    //     console.log("Transaction signed:", results.untrusted.signedTx);
-    //     return results.untrusted.signedTx;
-    //   } else {
-    //     toast.error("Failed to sign transaction");
-    //     console.error(
-    //       "Failed to sign transaction:",
-    //       results?.untrusted?.error || "Unknown error"
-    //     );
-    //   }
+      if (results?.untrusted?.success) {
+        toast.success("Transaction successfull");
+        console.log("Transaction signed:", results.untrusted.signedTx);
+        return results.untrusted.signedTx;
+      } else {
+        toast.error("Failed to sign transaction");
+        console.error(
+          "Failed to sign transaction:",
+          results?.untrusted?.error || "Unknown error"
+        );
+      }
     } catch (error) {
-        toast.error("There may be some issue with networks, please try reloading or try after some time");
+      toast.error(
+        "There may be some issue with networks, please try reloading or try after some time"
+      );
       console.error("Error signing transaction:", error);
     }
 

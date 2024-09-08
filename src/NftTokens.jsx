@@ -58,9 +58,6 @@ export const NFTDisplay = ({ mintData }) => {
 
   const handleMint = async (nftName, username) => {
     try {
-
-      let a =localStorage.getItem("vwoSn")
-      console.log(a);
       if (!walletAddress) {
         await connectWallet();
         console.error("Wallet not connected");
@@ -115,6 +112,7 @@ export const NFTDisplay = ({ mintData }) => {
 
       console.log("Transaction", transaction);
     } catch (error) {
+      toast.error("Error during minting process: ", error);
       console.error("Error during minting process:", error);
     }
   };
