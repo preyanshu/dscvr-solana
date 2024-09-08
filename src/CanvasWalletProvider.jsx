@@ -112,13 +112,16 @@ export const CanvasWalletProvider = ({ children }) => {
             transaction.feePayer = new PublicKey(walletAddress);
     
             // Serialize the transaction
+            console.log("transaction",transaction)
             const serializedTx = transaction.serialize({
                 requireAllSignatures: false,
                 verifySignatures: false,
             });
-    
+            console.log("seriaize",serializedTx)
             // Encode serialized transaction to base58 if needed
             const base58Tx = encode(serializedTx);
+
+            console.log(base58Tx,"base")
     
             // Sign and send transaction
             const results = await canvasClient.signAndSendTransaction({
