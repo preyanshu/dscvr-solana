@@ -103,7 +103,7 @@ export const NFTDisplay = ({ mintData }) => {
           nftName,
           new BN(userData.followerCount),
           new BN(userData?.streak?.dayCount),
-          new BN(100000000),
+          new BN(1000000000),
           username
         )
         .accounts(accounts)
