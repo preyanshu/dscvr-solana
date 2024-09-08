@@ -165,7 +165,7 @@ export const CanvasWalletProvider = ({ children }) => {
     
             for (const transaction of transactions) {
                 // Fetch the latest blockhash
-                const { blockhash } = await connection.getLatestBlockhash({ commitment: "finalized" });
+                const { blockhash } = await connection.getLatestBlockhash({ commitment: "confirmed" });
                 transaction.recentBlockhash = blockhash;
                 transaction.feePayer = new PublicKey(walletAddress);
     
