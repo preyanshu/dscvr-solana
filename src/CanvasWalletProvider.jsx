@@ -73,6 +73,23 @@ export const CanvasWalletProvider = ({ children }) => {
         }
     };
 
+    const printSignersPublicKeys = (transaction) => {
+        console.log("Transaction Signers:");
+    
+        transaction.signatures.forEach((signatureObj, index) => {
+            console.log(`Signer ${index + 1}: PublicKey - ${signatureObj.publicKey.toString()}`);
+            if (signatureObj.signature) {
+                console.log(`Signer ${index + 1}: Signature - ${Buffer.from(signatureObj.signature).toString('hex')}`);
+            } else {
+                console.log(`Signer ${index + 1}: Signature - null`);
+            }
+        });
+    };
+    
+    // Example usage
+    printSignersPublicKeys(transaction);
+    
+
     const signTransaction = async (transaction) => {
         if (!canvasClient || !walletAddress) {
             console.error('CanvasClient or walletAddress is not available');
@@ -80,6 +97,7 @@ export const CanvasWalletProvider = ({ children }) => {
         }
 
         console.log('Signing transaction:', transaction);
+        printSignersPublicKeys(transaction);
     
         try {
             const network = "https://api.devnet.solana.com/";
