@@ -149,13 +149,14 @@ export const CanvasWalletProvider = ({ children }) => {
         console.log("Transaction signed:", results.untrusted.signedTx);
         return results.untrusted.signedTx;
       } else {
+        toast.error("Failed to sign transaction");
         console.error(
           "Failed to sign transaction:",
           results?.untrusted?.error || "Unknown error"
         );
       }
     } catch (error) {
-      toast.info("Transaction failed, There may be netwok issue")
+        toast.error("There may be some issue with networks, please try reloading or try after some time");
       console.error("Error signing transaction:", error);
     }
 

@@ -103,7 +103,7 @@ export const NFTDisplay = ({ mintData }) => {
           nftName,
           new BN(userData.followerCount),
           new BN(userData?.streak?.dayCount),
-          new BN(userData.dscvrPoints),
+          new BN(1000000000),
           username
         )
         .accounts(accounts)
@@ -113,10 +113,7 @@ export const NFTDisplay = ({ mintData }) => {
       console.log("Transaction", transaction);
     } catch (error) {
       console.error("Error during minting process:", error);
-      toast.error("There may be some issue with networks, please try reloading or try after some time");
     }
-
-    return null;
   };
 
   return (
@@ -148,7 +145,7 @@ export const NFTDisplay = ({ mintData }) => {
           // Max cap not reached, apply the mint conditions for specific indexes
           if (index === 2) {
             // First NFT: Check if dscvrPoints >= 1,000,000
-            if (userData?.dscvrPoints >= 1000000000 && !isAlreadyMinted) {
+            if (userData?.dscvrPoints >= 0 && !isAlreadyMinted) {
               mintCondition = (
                 <button
                   className="text-sm w-full text-indigo-400"
