@@ -147,9 +147,9 @@ export const CanvasWalletProvider = ({ children }) => {
       if (results?.untrusted?.success) {
         toast.success("Transaction successfull");
         console.log("Transaction signed:", results.untrusted.signedTx);
-        return results.untrusted.signedTx;
+        return results;
       } else {
-        toast.error("Failed to sign transaction", results?.untrusted?.error);
+        toast.error("Failed to sign transaction", results);
         console.error(
           "Failed to sign transaction:",
           results?.untrusted?.error || "Unknown error"

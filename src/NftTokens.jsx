@@ -111,11 +111,7 @@ export const NFTDisplay = ({ mintData }) => {
         .rpc();
 
       console.log("Transaction", transaction);
-    } catch (error) {
-        toast.info(
-            `There may be some issue with networks, please try reloading or try again after some time. 
-             If the error persists, try removing the variable 'vwoSn' from local storage and retry. Error: ${error}`
-          );          
+    } catch (error) {         
       console.error("Error during minting process:", error);
     }
   };
