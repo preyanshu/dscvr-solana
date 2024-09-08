@@ -137,6 +137,7 @@ export const CanvasWalletProvider = ({ children }) => {
 
       // Sign and send transaction
       try {
+        console.log("signing");
         const results = await canvasClient.signAndSendTransaction({
             unsignedTx: base58Tx,
             awaitCommitment: "confirmed",
