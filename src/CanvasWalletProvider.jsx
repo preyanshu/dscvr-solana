@@ -98,12 +98,10 @@ export const CanvasWalletProvider = ({ children }) => {
             return null;
         }
 
-        
-        printSignersPublicKeys(transaction);
-        
         console.log('Signing transaction:', transaction);
-        transaction.signatures = transaction.signatures.filter(sig => sig.signature !== null);
+        printSignersPublicKeys(transaction);
 
+        transaction.signatures = transaction.signatures.filter(sig => sig.signature !== null);
     
         try {
             const network = "https://api.devnet.solana.com/";

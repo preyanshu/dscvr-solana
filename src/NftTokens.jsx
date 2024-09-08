@@ -77,8 +77,6 @@ export const NFTDisplay = ({ mintData }) => {
                 signTransaction,
                 signAllTransactions
 
-
-
             }, {
                 commitment: "confirmed",
             });
