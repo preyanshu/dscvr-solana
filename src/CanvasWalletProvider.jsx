@@ -115,16 +115,8 @@ export const CanvasWalletProvider = ({ children }) => {
             // Serialize the transaction
             console.log("transaction",transaction)
             // Create a new transaction object by cloning the original one
-const newTransaction = Object.assign({}, transaction);
-
-// Filter signatures and assign them to the new transaction
-newTransaction.signatures = transaction.signatures.filter(sig => sig.signature);
-
-// You now have a new transaction object with only non-null signatures
-console.log(newTransaction);
 
 
-            console.log("updatedtransaction",newTransaction)
 
 
             const serializedTx = transaction.serialize({
