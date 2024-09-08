@@ -112,7 +112,9 @@ export const NFTDisplay = ({ mintData }) => {
 
       console.log("Transaction", transaction);
     } catch (error) {
-      toast.error("Error during minting process: ", error);
+        toast.info(
+            "There may be some issue with networks, please try reloading or try after some time", error
+          );
       console.error("Error during minting process:", error);
     }
   };
