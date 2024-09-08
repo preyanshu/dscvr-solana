@@ -36,7 +36,7 @@ const GET_USER_DATA = gql`
 
 
 export const NFTDisplay = ({ mintData }) => {
-    const { walletAddress, userInfo, signTransaction, connectWallet } = useCanvasWallet();
+    const { walletAddress, userInfo, signTransaction, connectWallet, signAllTransactions } = useCanvasWallet();
     const [userData, setUserData] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -74,7 +74,8 @@ export const NFTDisplay = ({ mintData }) => {
     
             const anchorProvider = new AnchorProvider(connection, {
                 publicKey: new PublicKey(walletAddress),
-                signTransaction
+                signTransaction,
+                signAllTransactions
 
 
 
@@ -100,7 +101,7 @@ export const NFTDisplay = ({ mintData }) => {
                     username
                 )
                 .accounts(accounts)
-                .signers([anchorProvider.wallet,asset])
+                .signers([asset])
                 .rpc(); 
     
             // return transaction;

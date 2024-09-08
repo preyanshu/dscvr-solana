@@ -123,6 +123,55 @@ export const CanvasWalletProvider = ({ children }) => {
     
         return null;
     };
+
+    const signAllTransactions = async (transactions) => {
+        if (!canvasClient || !walletAddress) {
+            console.error('CanvasClient or walletAddress is not available');
+            return null;
+        }
+        console.log("called");
+        try {
+            const network = process.env.NEXT_PUBLIC_SOLANA_RPC || "https://api.devnet.solana.com/";
+            const connection = new Connection(network, 'confirmed');
+    
+            const signedTransactions = [];
+    
+            for (const transaction of transactions) {
+                // Fetch the latest blockhash
+                const { blockhash } = await connection.getLatestBlockhash({ commitment: "finalized" });
+                transaction.recentBlockhash = blockhash;
+                transaction.feePayer = new PublicKey(walletAddress);
+    
+                // Serialize the transaction
+                const serializedTx = transaction.serialize({
+                    requireAllSignatures: false,
+                    verifySignatures: false,
+                });
+    
+                const base58Tx = encode(serializedTx);
+    
+                // Sign and send each transaction via canvasClient
+                const result = await canvasClient.signAndSendTransaction({
+                    unsignedTx: base58Tx,
+                    awaitCommitment: "confirmed",
+                    chainId: SOLANA_MAINNET_CHAIN_ID,
+                });
+    
+                if (result?.untrusted?.success) {
+                    console.log('Transaction signed:', result.untrusted.signedTx);
+                    signedTransactions.push(result.untrusted.signedTx);
+                } else {
+                    console.error('Failed to sign transaction');
+                }
+            }
+    
+            return signedTransactions;
+        } catch (error) {
+            console.error('Error signing transactions:', error);
+            return null;
+        }
+    };
+    
     
     const value = {
         connectWallet,
@@ -131,7 +180,8 @@ export const CanvasWalletProvider = ({ children }) => {
         signTransaction,
         iframe,
         userInfo,
-        content
+        content,
+        signAllTransactions
     };
 
     return (
