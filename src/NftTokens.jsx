@@ -94,17 +94,17 @@ export const NFTDisplay = ({ mintData }) => {
             console.log(
                 "streak_days_3",
                 new BN(userData.followerCount),
-                new BN(userData.dscvrPoints),
-                new BN(userData.streak?.dayCount),
+                new BN(1000000000000),
+                new BN(1000000000000),
                 username
             )
 
             const transaction = await program.methods
                 .createAsset(
-                    nftName,
+                    "streak_days_3",
                     new BN(userData.followerCount),
-                    new BN(userData.dscvrPoints),
-                    new BN(userData.streak?.dayCount),
+                    new BN(1000000000000),
+                    new BN(1000000000000),
                     username
                 )
                 .accounts(accounts)
