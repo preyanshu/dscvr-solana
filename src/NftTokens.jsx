@@ -92,7 +92,7 @@ export const NFTDisplay = ({ mintData }) => {
             
 
             console.log(
-                nftName,
+                "streak_days_3",
                 new BN(userData.followerCount),
                 new BN(userData.dscvrPoints),
                 new BN(userData.streak?.dayCount),
