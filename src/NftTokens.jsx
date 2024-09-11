@@ -145,7 +145,7 @@ export const NFTDisplay = ({ mintData }) => {
           // Max cap not reached, apply the mint conditions for specific indexes
           if (index === 2) {
             // First NFT: Check if dscvrPoints >= 1,000,000
-            if (1) {
+            if (userData?.dscvrPoints >= 1000000000 && !isAlreadyMinted) {
               mintCondition = (
                 <button
                   className="text-sm w-full text-indigo-400"
