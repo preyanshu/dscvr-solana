@@ -87,14 +87,14 @@ export const NFTDisplay = ({ mintData }) => {
         signer: anchorProvider.wallet.publicKey,
         payer: anchorProvider.wallet.publicKey,
         asset: assetPublicKey,
-        database: new PublicKey("5ahNFeoYAS4HayZWK6osa6ZiocNojNJcfzgUJASicRbf"),
+        database: new PublicKey("6XjJbtVL4yWnQC1zjpy6QoutbSSaXbDhJtm2Qe1Lk3o9"),
       };
 
       console.log(
         nftName,
         new BN(userData.followerCount),
         new BN(userData?.streak?.dayCount),
-        new BN(userData.dscvrPoints),
+        new BN(userData.dscvrPoints/1e6),
         username
       );
 
@@ -102,8 +102,9 @@ export const NFTDisplay = ({ mintData }) => {
         .createAsset(
           nftName,
           new BN(userData.followerCount),
+          new BN(userData.dscvrPoints/1e6),
           new BN(userData?.streak?.dayCount),
-          new BN(userData.dscvrPoints),
+        
           username
         )
         .accounts(accounts)
@@ -145,7 +146,7 @@ export const NFTDisplay = ({ mintData }) => {
           // Max cap not reached, apply the mint conditions for specific indexes
           if (index === 2) {
             // First NFT: Check if dscvrPoints >= 1,000,000
-            if (userData?.dscvrPoints >= 1000000000 && !isAlreadyMinted) {
+            if (userData?.dscvrPoints/1e6 >= 1000 && !isAlreadyMinted) {
               mintCondition = (
                 <button
                   className="text-sm w-full text-indigo-400"
