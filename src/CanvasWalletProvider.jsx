@@ -223,6 +223,7 @@ export const CanvasWalletProvider = ({ children }) => {
     walletAddress,
     walletIcon,
     signTransaction,
+    isSuccess,
     iframe,
     userInfo,
     content,
