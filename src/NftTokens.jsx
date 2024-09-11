@@ -120,7 +120,9 @@ export const NFTDisplay = ({ mintData }) => {
     <div className="flex flex-wrap text-xs justify-around p-4">
       {nfts.map((nft, index) => {
         const achievement = mintData?.achievements[index];
-        const isAlreadyMinted =0
+        const isAlreadyMinted = achievement?.wallets.some(
+          (wallet) => wallet?.walletAddress === walletAddress
+        );
 
         let mintCondition = null;
 
@@ -143,7 +145,7 @@ export const NFTDisplay = ({ mintData }) => {
           // Max cap not reached, apply the mint conditions for specific indexes
           if (index === 2) {
             // First NFT: Check if dscvrPoints >= 1,000,000
-            if (userData?.dscvrPoints >= 1000000000 && !isAlreadyMinted) {
+            if (1) {
               mintCondition = (
                 <button
                   className="text-sm w-full text-indigo-400"
