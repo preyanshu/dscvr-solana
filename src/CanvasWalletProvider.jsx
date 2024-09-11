@@ -16,6 +16,7 @@ export const CanvasWalletProvider = ({ children }) => {
   const [iframe, setIframe] = useState(false);
   const [userInfo, setUserInfo] = useState(undefined);
   const [content, setContent] = useState(undefined);
+  const [isSuccess, setIsSuccess] = useState(false);
 
   useEffect(() => {
     const isIframe = () => {
@@ -146,6 +147,7 @@ export const CanvasWalletProvider = ({ children }) => {
       console.log("Transaction result:", results);
 
       if (results?.untrusted?.success) {
+        setIsSuccess(true);
         toast.success("Transaction successfull");
         console.log("Transaction signed:", results.untrusted.signedTx);
         return results;

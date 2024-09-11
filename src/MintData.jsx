@@ -19,7 +19,7 @@ import BN from 'bn.js';
 
 export const MintData1 = ({ setMintData }) => {
     
-    const { walletAddress, signTransaction } = useCanvasWallet();
+    const { walletAddress, signTransaction, isSuccess } = useCanvasWallet();
     const connection = new Connection(clusterApiUrl("devnet"), "confirmed");
 
     function parseBN(data) {
@@ -67,7 +67,7 @@ export const MintData1 = ({ setMintData }) => {
         if (walletAddress) {
             init();
         }
-    }, [walletAddress]);
+    }, [walletAddress, isSuccess]);
 
     return <div></div>;
 };
