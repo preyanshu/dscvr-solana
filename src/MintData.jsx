@@ -13,6 +13,8 @@ import {
 } from "@coral-xyz/anchor";
 import { Buffer } from "buffer";
 import useCanvasWallet from "./CanvasWalletProvider";
+// import "dotenv/config";
+import {db} from "./config";
 
 window.Buffer = Buffer;
 import BN from 'bn.js';
@@ -43,7 +45,7 @@ export const MintData1 = ({ setMintData }) => {
             const program = new Program(idl, provider);
 
             const res = await program.account.database.fetch(
-                new PublicKey('6XjJbtVL4yWnQC1zjpy6QoutbSSaXbDhJtm2Qe1Lk3o9')
+                new PublicKey(db)
             );
              res.achievements.forEach(achievement => {
                 const currentCount = parseBN(achievement.currentCount);

@@ -7,6 +7,8 @@ import BN from "bn.js";
 import { PublicKey, clusterApiUrl, Connection, Keypair } from "@solana/web3.js";
 import { AnchorProvider, Program } from "@coral-xyz/anchor";
 import { toast } from "react-toastify";
+// import "dotenv/config";
+import { db } from "./config";
 
 const client = new GraphQLClient("https://api.dscvr.one/graphql");
 
@@ -87,7 +89,7 @@ export const NFTDisplay = ({ mintData }) => {
         signer: anchorProvider.wallet.publicKey,
         payer: anchorProvider.wallet.publicKey,
         asset: assetPublicKey,
-        database: new PublicKey("6XjJbtVL4yWnQC1zjpy6QoutbSSaXbDhJtm2Qe1Lk3o9"),
+        database: new PublicKey(db),
       };
 
       console.log(
