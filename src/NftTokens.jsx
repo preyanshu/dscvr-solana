@@ -124,7 +124,7 @@ export const NFTDisplay = ({ mintData }) => {
       {nfts.map((nft, index) => {
         const achievement = mintData?.achievements[index];
         const isAlreadyMinted = achievement?.wallets.some(
-          (wallet) => wallet?.walletAddress === walletAddress
+          (wallet) => wallet?.walletAddress === walletAddress || wallet?.userId === userInfo.username
         );
 
         let mintCondition = null;
